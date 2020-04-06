@@ -151,3 +151,6 @@ Then set the `image` setting in `conf` to `plex` and start Plex with the `start`
 You can run one Plex server in `host`, `bridged`, or `http-only` modes on a given host.  You can add additional Plex server(s), but only in `http-only` mode.  When running more than one, ensure each one has a unique `port`.  
 
 To run another Plex server, make a copy of these files in another directory and configure the `conf` file for the additional server.  Configure the `media`, `database`, and `transcode` directories, and give it a different `port`, `containername`, and `servername`.
+
+## More info
+For more information, see the [Official Docker container for Plex Media Server](https://github.com/plexinc/pms-docker) documentation.
