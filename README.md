@@ -1,8 +1,6 @@
-# subsonic-docker
-Easy to run Subsonic in Docker with flexible configuration.
-![Subsonic by Sindre Mehus](http://www.subsonic.org/pages/inc/img/subsonic_logo.png)
-
-Thanks to Sindre Mehus at [subsonic.org](http://www.subsonic.org/pages/index.jsp) for making the best home music serving solution!
+# plex-docker
+Easy to run Plex in Docker (host or bridge mode) with flexible configuration.
+![Plex](https://i1.wp.com/softsfile.info/wp-content/uploads/2019/10/plex-pms-icon.png?fit=256%2C256)
 
 ## Getting started
 
