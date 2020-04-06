@@ -102,38 +102,15 @@ ln -s /your-plex-transcode-area/ database/transcode
 If you don't change or create a symbolic link for `transcode`, by default a new directory called `transcode` will be created in `plex_dir`.
 
 #### `port`
-The port on which Plex will listen for incoming HTTP traffic.  Plex's default port is `32400`, but you may prefer to set it to something else if you are running in Docker `bridged` mode.
-
-`port` should be greater than `1024`.
-
-#### `https_port`
-The port on which Subsonic will listen for incoming HTTPS traffic. Default is 0 (disabled).
-`https_port` should be greater than `1024`.
-
-#### `hostip`
-Sonos requires that the container use the host's ip address, not a container ip address.
-By default `hostip` is blank, which tells the container to figure out the ip address of the host.  If it fails for some reason, then if your host ip is fixed, set `hostip` to that ip address. Otherwise, set hostip to `0.0.0.0` (Sonos may not work with Subsonic in this case).
-
-Thanks to [uilkoenig](https://github.com/ulikoenig/subsonic-patched#run-container) for the info on Sonos.
-
-#### `context_path`
-The context path, i.e., the last part of the Subsonic URL. Typically "/" or "/subsonic". Default is "/".
-
-#### `locale`
-Default locale is `en_US.UTF-8`.
-
-See https://www.tecmint.com/set-system-locales-in-linux/ for more info.
+The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but you may need to set it to something else, for example if you are running the Plex container in Docker `bridged` mode, and want to run two or more containers, each will need a different port. `port` should be greater than `1024`.
 
 #### `tz`
-Default time zone is `America/New_York`.  Set this to your time zone so that Subsonic's scheduled time for "Scan media folders" reflects your time zone.
+Set this to your time zone so that Plex's scheduled time for running shceduled tasks reflects your time zone.  Default time zone is `America/New_York`.
 
-See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ for more info.
+See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more info.
 
-#### `user` and `uid`
-By default Subsonic runs in the container under the user `subsonic` with uid `1000`.
-Set `uid` to your uid to grant user `subsonic` write permissions in the music directories, otherwise changing album art and tags will fail.
-
-If problems persist, you can try changing `user` to `root`, although from a security perspective it is better to run as a non-root user.
+#### `uid`
+By default Plex runs in the container under the user `plex` with your uid.  If your uid doesn't have read/write privileges to your media directories, set `uid` to a value which will grant user `plex` read/write permissions in the media directories.
 
 ### `build`
 This will build the Plex container, based on the latest version.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
