@@ -11,16 +11,22 @@ media="$plex_dir/media"
 database="$plex_dir/database"
 transcode="$plex_dir/transcode"
 
-hostname="Plex Server"
-containername="plex"
-mode="host" # host or bridged
-hostip=""   # normally leave blank
 port=32400
+mode="host" # "host" or "bridged" or "http-only"
+servername="Plex Server"
+containername="plex"
 
-tz="America/New_York"
-uid="$UID"
-
-image="plexinc/pms-docker:public"
+plexlogin=true
 slideshow_speed_ms="default"
+tz="America/New_York"
+uid="$(id -u)"
+gid="$(id -g)"
 
-[ -f "./myconf" ] && source ./myconf
+hostip=""   # normally leave blank
+docker_network="172.16.0.0/16,172.17.0.0/16"
+image="plexinc/pms-docker:public"
+
+if [ -f "./myconf" ]
+then
+  source ./myconf
+fi

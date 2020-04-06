@@ -23,20 +23,36 @@ then
   fi
 fi
 
+allowed_networks="$hostip/24"
 if [ "$mode" = "host" ]
 then
   mode_args="--network host"
   port=32400
-else
+elif [ "$mode" = "http-only" ]
+then
   mode_args="-p $port:32400/tcp --env ADVERTISE_IP=http://$hostip:$port/"
+  allowed_networks="$allowed_networks,$docker_network"
+else  # bridged
+  mode_args="-p $port:32400/tcp --env ADVERTISE_IP=http://$hostip:$port/ \
+  -p 3005:3005/tcp \
+  -p 8324:8324/tcp \
+  -p 32469:32469/tcp \
+  -p 1900:1900/udp \
+  -p 32410:32410/udp \
+  -p 32412:32412/udp \
+  -p 32413:32413/udp \
+  -p 32414:32414/udp"
+  allowed_networks="$allowed_networks,$docker_network"
 fi
+[ $plexlogin ] || mode_args="$mode_args --env ALLOWED_NETWORKS=$allowed_networks"
 
+set -x
 docker run -d \
   --name "$containername" \
   --env TZ="$tz" \
   --env PLEX_UID="$uid" \
-  --env PLEX_GID="$uid" \
-  --hostname "$hostname" \
+  --env PLEX_GID="$gid" \
+  --hostname "$servername" \
   -v "$media:/media" \
   -v "$database:/config" \
   -v "$transcode:/transcode" \
@@ -44,7 +60,7 @@ docker run -d \
   $mode_args \
   ${1:-"$image"}
   # --env PLEX_CLAIM="<claimToken>" \
-  # --env ALLOWED_NETWORKS="$hostip/24" \
+set +x
 
 # https://unix.stackexchange.com/a/470629/338467
 wait() {
@@ -72,4 +88,4 @@ then
   || { echo "Slideshow speed not set!"; exit 1; }
   echo "Slideshow speed set to $slideshow_speed_ms"
 fi
-echo "$hostname started in container $containername at http://$hostip:$port/web"
+echo "$servername started in container $containername at http://$hostip:$port/web"
