@@ -107,7 +107,7 @@ The port on which Plex will listen for incoming HTTP traffic.  Plex's normal por
 #### `mode`
 The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes expose all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  You can only run one Plex server in either `host` or `bridged` modes on a given host.
 
-`http-only` runs in bridged mode and only exposes Plex's HTTP port.  You can run one or more Plex servers in `http-only` mode as long as each one has a unique `port`.  You can also run one Plex server in either `host` or `bridged` modes, and one or more additional Plex servers in `http-only` mode.
+`http-only` runs in bridged mode and only exposes Plex's HTTP port.  You can run one Plex server in either `host`, `bridged`, or `http-only` modes, and add additional Plex server(s) in `http-only` mode.  Ensure that each Plex server has a unique `port`.
 
 Defaults to `host`.  In `host` mode the port is always 32400.
 
@@ -148,6 +148,6 @@ This will build a local Plex image, based on the latest version of Plex Media Se
 Then set the `image` setting in `conf` to `plex` and start Plex with the `start` script.
 
 ## Running more than one Plex server
-You can only run one Plex server in either `host` or `bridged` modes on a given host.  You can run one or more Plex servers in `http-only` mode as long as each one has a unique `port`.  You can also run one Plex server in either `host` or `bridged` modes, and one or more additional Plex servers in `http-only` mode.
+You can run one Plex server in `host`, `bridged`, or `http-only` modes on a given host.  You can add additional Plex server(s), but only in `http-only` mode.  When running more than one, ensure each one has a unique `port`.  
 
-To run another Plex server, make a copy of these files in another directoy and configure the `conf` file for the additional server.  Give it a different `port`, `containername`, and `servername`.
+To run another Plex server, make a copy of these files in another directory and configure the `conf` file for the additional server.  Give it a different `port`, `containername`, and `servername`.
