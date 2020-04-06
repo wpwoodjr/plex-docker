@@ -107,17 +107,26 @@ servername="Plex Server"
 #### `containername`
 ="plex"
 
-#### `mode`
-The mode to run Docker in, `host` or `bridged`.  Defaults to `host`.
+#### `port`
+The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but you may need to set it to something else, for example if you are running the Plex container in Docker `bridged` mode, and want to run two or more containers, each will need a different port. `port` should be greater than `1024`.
 
-#### `slideshow_speed_ms`
-The number of milliseconds a slide remains onscreen before shifting to the next slide.  Only applicable when viewing the slideshow in Plex's web interface, from your local server (ie not from `app.plex.tv`).  Defaults to 5000 milliseconds (Plex's default).
+#### `mode`
+The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes enable all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  
+
+`http-only` runs in bridged mode and only exposes Plex's HTTP port.
+
+You can only run one Plex server with all network ports exposed on a given host.  You may run additional Plex servers in `http-only` mode.  If you do this, give each Plex server a unique `port` (see above).
+
+Defaults to `host`.
+
+#### `docker-network`
+Docker's bridge network address range.  Normally you won't need to change this.
 
 #### `hostip`
 The IP address of the host that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
 
-#### `port`
-The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but you may need to set it to something else, for example if you are running the Plex container in Docker `bridged` mode, and want to run two or more containers, each will need a different port. `port` should be greater than `1024`.
+#### `slideshow_speed_ms`
+The number of milliseconds a slide remains on-screen before switching to the next slide.  Only applicable when viewing the slideshow in Plex's local web interface, from your local server (ie not from `app.plex.tv`).  Defaults to 5000 milliseconds (Plex's default).
 
 #### `tz`
 Set this to your time zone so that Plex's scheduled time for running scheduled tasks reflects your time zone.  By default time zone is set to `America/New_York`.
