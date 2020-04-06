@@ -1,71 +1,81 @@
 # plex-docker
-Easy to run Plex in Docker (host or bridge mode) with flexible configuration.
+Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the slideshow speed on the local web instance of Plex.
+
 ![Plex](https://i1.wp.com/softsfile.info/wp-content/uploads/2019/10/plex-pms-icon.png?fit=256%2C256)
 
 ## Getting started
 
 After cloning or downloading this repository, `cd` to it and follow the instructions below.
 
-### `build`
-If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker. Then run:
-```
-./build
-```
-This will build the Subsonic container, based on Subsonic 6.1.6.
+### Docker
+If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
 ### `start`
 After configuring settings (see `conf` section below), run:
 ```
 ./start
 ```
-to start Subsonic.  You will see some log output similar to:
+to start Plex.  You will see some log output similar to:
 ```
 $ ./start
-416bb53f3c6e39f0641e2f9f7099d892e6ab637290c3cb89119a2207a81d71dd
-
-Starting Subsonic on Mon Mar 23 09:49:30 EDT 2020
-
-initializing container
-setting locale to en_US.UTF-8
-Generating locales (this might take a while)...
-  en_US.UTF-8... done
-Generation complete.
-setting timezone to America/New_York
-creating user subsonic with uid 1000
-
-updating transcode files
-total 105068
--rwxr-xr-x 1 subsonic subsonic 32495668 Nov 10 13:32 ffmpeg
--rwxr-xr-x 1 subsonic subsonic   372787 Nov 10 13:32 lame
-
-starting Subsonic with args --host=10.0.1.15  --port=4040 --https-port=0 --context-path=/ --max-memory=250
-Started Subsonic [PID 66, /var/subsonic/subsonic_sh.log]
-   66 ?        R      0:00 java -Xmx250m -Dsubsonic.home=/var/subsonic -Dsubsonic.host=10.0.1.15 -Dsubsonic.port=4040 -Dsubsonic.httpsPort=0 -Dsubsonic.contextPath=/ -Dsubsonic.db= -Dsubsonic.defaultMusicFolder=/var/music -Dsubsonic.defaultPodcastFolder=/var/music/Podcast -Dsubsonic.defaultPlaylistFolder=/var/playlists -Djava.awt.headless=true -verbose:gc -jar subsonic-booter-jar-with-dependencies.jar
+36f7cbac3839852bcef92efdf834e8cb2f7a29e30f353812162cf37915abc986
+[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
+[s6-init] ensuring user provided files have correct perms...exited 0.
+[fix-attrs.d] applying ownership & permissions fixes...
+[fix-attrs.d] done.
+[cont-init.d] executing container initialization scripts...
+[cont-init.d] 40-plex-first-run: executing... 
+Plex Media Server first run setup complete
+[cont-init.d] 40-plex-first-run: exited 0.
+[cont-init.d] 45-plex-hw-transcode-and-connected-tuner: executing... 
+[cont-init.d] 45-plex-hw-transcode-and-connected-tuner: exited 0.
+[cont-init.d] 50-plex-update: executing... 
+Attempting to upgrade to: 1.18.9.2578-513b381af
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   190    0   190    0     0    307      0 --:--:-- --:--:-- --:--:--   307
+100 86.2M  100 86.2M    0     0  14.3M      0  0:00:06  0:00:06 --:--:-- 16.7M
+Selecting previously unselected package plexmediaserver.
+(Reading database ... 7569 files and directories currently installed.)
+Preparing to unpack /tmp/plexmediaserver.deb ...
+PlexMediaServer install: Pre-installation Validation.  
+PlexMediaServer install: Docker detected. Preinstallation validation not required.  
+Unpacking plexmediaserver (1.18.9.2578-513b381af) ...
+Setting up plexmediaserver (1.18.9.2578-513b381af) ...
+PlexMediaServer install: Docker detected. Postinstallation tasks not required. Continuing.   
+Processing triggers for libc-bin (2.23-0ubuntu11) ...
+[cont-init.d] 50-plex-update: exited 0.
+[cont-init.d] done.
+[services.d] starting services
+[services.d] done.
+Starting Plex Media Server.
+Slideshow speed set to 4000
+Plex Server started in container plex at http://10.0.1.15:32400/web
 ```
-Subsonic should be up and running!  To go to its browser interface, note the `--host=<ip>`, `--port=<port>`, and `--context-path=<path>` settings in the log output, and browse to `<ip>:<port><context-path>`. For example, browse to `10.0.1.15:4040/`
+Plex should be up and running!  To go to its browser interface, note the last line in the log output, and browse to the web address. For example, browse to `10.0.1.15:32400/web`
 
-To have Subsonic automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
+To have Plex automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
 ```
 sudo systemctl enable docker
 ```
 
 ### `stop`
-To stop Subsonic, run:
+To stop Plex, run:
 ```
 ./stop
 ```
-If you stop Subsonic, it will not restart again until you restart it with `./start` as above.
+If you stop Plex, it will not restart again until you restart it with `./start` as above.
 
 ### `conf`
 The `conf` file is where you customize your installation as required. `conf` contains the following configurable settings:
 
-#### `subsonic_dir`
-Directory where you downloaded this repo.  You should not need to change this unless the auto-detect fails for some reason.
+#### `plex_dir`
+Directory where Plex's database will reside.  You should not need to change this.
 
-#### `music`
-Directory containing your music files.
+#### `media`
+Directory containing your media files.
 
-Defaults to `music` in `subsonic_dir`.  You can change `music` to point directly to your music directory, or alternatively you can create a symbolic link in `subsonic_dir` from `music` to your music directory:
+Defaults to `media` in `plex_dir`.  You can change `music` to point directly to your music directory, or alternatively you can create a symbolic link in `subsonic_dir` from `music` to your music directory:
 ```
 ln -s /your-music/ music
 ```
@@ -145,34 +155,8 @@ Set `uid` to your uid to grant user `subsonic` write permissions in the music di
 
 If problems persist, you can try changing `user` to `root`, although from a security perspective it is better to run as a non-root user.
 
-#### `args`
-Defaults to blank (no args).
-You probably won't need to add any args, as most are configured already above.
-For reference here is the list of Subsonic arguments:
+### `build`
+This will build the Plex container, based on the latest version.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
 ```
-Usage: subsonic.sh [options]
-  --help               This small usage guide.
-  --home=DIR           The directory where Subsonic will create files.
-                       Make sure it is writable. Default: /var/subsonic
-  --host=HOST          The host name or IP address on which to bind Subsonic.
-                       Only relevant if you have multiple network interfaces and want
-                       to make Subsonic available on only one of them. The default value
-                       will bind Subsonic to all available network interfaces. Default: 0.0.0.0
-  --port=PORT          The port on which Subsonic will listen for
-                       incoming HTTP traffic. Default: 4040
-  --https-port=PORT    The port on which Subsonic will listen for
-                       incoming HTTPS traffic. Default: 0 (disabled)
-  --context-path=PATH  The context path, i.e., the last part of the Subsonic
-                       URL. Typically '/' or '/subsonic'. Default '/'
-  --db=JDBC_URL        Use alternate database. MySQL, PostgreSQL and MariaDB are currently supported.
-  --max-memory=MB      The memory limit (max Java heap size) in megabytes.
-                       Default: 100
-  --pidfile=PIDFILE    Write PID to this file. Default not created.
-  --quiet              Don't print anything to standard out. Default false.
-  --default-music-folder=DIR    Configure Subsonic to use this folder for music.  This option 
-                                only has effect the first time Subsonic is started. Default '/var/music'
-  --default-podcast-folder=DIR  Configure Subsonic to use this folder for Podcasts.  This option 
-                                only has effect the first time Subsonic is started. Default '/var/music/Podcast'
-  --default-playlist-folder=DIR Configure Subsonic to use this folder for playlist imports.  This option 
-                                only has effect the first time Subsonic is started. Default '/var/playlists'
+./build
 ```
