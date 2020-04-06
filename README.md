@@ -101,19 +101,38 @@ ln -s /your-plex-transcode-area/ database/transcode
 ```
 If you don't change or create a symbolic link for `transcode`, by default a new directory called `transcode` will be created in `plex_dir`.
 
+#### `servername`
+servername="Plex Server"
+
+#### `containername`
+="plex"
+
+#### `mode`
+The mode to run Docker in, `host` or `bridged`.  Defaults to `host`.
+
+#### `slideshow_speed_ms`
+The number of milliseconds a slide remains onscreen before shifting to the next slide.  Only applicable when viewing the slideshow in Plex's web interface, from your local server (ie not from `app.plex.tv`).  Defaults to 5000 milliseconds (Plex's default).
+
+#### `hostip`
+The IP address of the host that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
+
 #### `port`
 The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but you may need to set it to something else, for example if you are running the Plex container in Docker `bridged` mode, and want to run two or more containers, each will need a different port. `port` should be greater than `1024`.
 
 #### `tz`
-Set this to your time zone so that Plex's scheduled time for running shceduled tasks reflects your time zone.  Default time zone is `America/New_York`.
+Set this to your time zone so that Plex's scheduled time for running scheduled tasks reflects your time zone.  By default time zone is set to `America/New_York`.
 
 See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more info.
 
-#### `uid`
-By default Plex runs in the container under the user `plex` with your uid.  If your uid doesn't have read/write privileges to your media directories, set `uid` to a value which will grant user `plex` read/write permissions in the media directories.
+#### `uid` and `gid`
+By default Plex runs in the container under the user `plex` with your uid and gid.  If your uid or gid doesn't have read/write privileges to your media directories, set `uid` and/or `gid` to a value which will grant user `plex` read/write permissions in the media directories.
+
+#### `image`
+This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update itslef to the latest version of Plex every time it is started.  If you don't want auto updates, you can use the `build` command (see below) to build a local image named `plex` and run that instead.  It's faster to start up too.
 
 ### `build`
-This will build the Plex container, based on the latest version.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
+This will build a local Plex image, based on the latest version, and upgrade other system packages.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
 ```
 ./build
 ```
+Then set the `image` setting in `conf` to `plex` and start Plex.
