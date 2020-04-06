@@ -1,0 +1,26 @@
+#!/bin/bash
+# first run ./build to build the Plex Docker container
+# then configure Plex by editing ./conf (this file) - see README.md for help
+# then run ./start to start Plex
+# run ./stop to stop Plex
+
+# see README.md before changing settings below
+
+plex_dir="$(pwd)/database"
+media="$plex_dir/media"
+database="$plex_dir/database"
+transcode="$plex_dir/transcode"
+
+hostname="Plex Server"
+containername="plex"
+mode="host" # host or bridged
+hostip=""   # normally leave blank
+port=32400
+
+tz="America/New_York"
+uid="$UID"
+
+image="plexinc/pms-docker:public"
+slideshow_speed_ms="default"
+
+[ -f "./myconf" ] && source ./myconf

@@ -1,0 +1,21 @@
+#!/bin/bash
+# first run ./build to build the Plex Docker container (this file)
+# then configure Plex by editing ./conf
+# then run ./start to start Plex
+# run ./stop to stop Plex
+
+./stop
+
+set -e
+source ./conf
+
+image="plexinc/pms-docker:public"
+docker pull "$image"
+./start "$image"
+sleep 60
+docker stop "$containername" >/dev/null
+docker commit "$containername" plex:upgraded
+
+# optionally pass slideshow speed in ms
+docker build -t plex --build-arg slideshow_speed_ms=${1:-"default"} .
+./stop

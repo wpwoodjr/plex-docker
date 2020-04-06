@@ -1,0 +1,75 @@
+#!/bin/bash
+# first run ./build to build the Plex Docker container
+# then configure Plex by editing ./conf
+# then run ./start to start Plex (this file)
+# run ./stop to stop Plex
+
+set -e
+source ./conf
+
+[ -d "$media" ] || mkdir -pv "$media"
+[ -d "$database" ] || mkdir -pv "$database"
+[ -d "$transcode" ] || mkdir -pv "$transcode"
+
+if [ "$hostip" = "" ]
+then
+  hostip=$(ip route get 8.8.8.8 || echo "0.0.0.0")
+  if [ "$hostip" = "0.0.0.0" ]
+  then
+    echo -e "\nfailed to get host ip, exiting..."
+    exit 1
+  else
+    hostip=$(awk <<<$hostip '{gsub(".*src",""); print $1; exit}')
+  fi
+fi
+
+if [ "$mode" = "host" ]
+then
+  mode_args="--network host"
+  port=32400
+else
+  mode_args="-p $port:32400/tcp --env ADVERTISE_IP=http://$hostip:$port/"
+fi
+
+docker run -d \
+  --name "$containername" \
+  --env TZ="$tz" \
+  --env PLEX_UID="$uid" \
+  --env PLEX_GID="$uid" \
+  --hostname "$hostname" \
+  -v "$media:/media" \
+  -v "$database:/config" \
+  -v "$transcode:/transcode" \
+  --device "/dev/dri:/dev/dri" \
+  $mode_args \
+  ${1:-"$image"}
+  # --env PLEX_CLAIM="<claimToken>" \
+  # --env ALLOWED_NETWORKS="$hostip/24" \
+
+# https://unix.stackexchange.com/a/470629/338467
+wait() {
+  local LOGLINE
+  while IFS= read -r LOGLINE || [[ -n "$LOGLINE" ]]; do
+    printf '%s\n' "$LOGLINE"
+    [[ "${LOGLINE}" == "$2" ]] && return 0
+  done < <(timeout "$1" $3)
+  return 0
+}
+
+wait 30 "Starting Plex Media Server." "docker logs -f $containername"
+
+if [ "$slideshow_speed_ms" != "default" ]
+then
+  docker exec "$containername" \
+    /bin/bash -c \
+    "sed -i -e 's/this.onSlideShowAdvance,5e3/this.onSlideShowAdvance,$slideshow_speed_ms/g' \
+    /usr/lib/plexmediaserver/Resources/Plug-ins*/WebClient.bundle/Contents/Resources/js/chunk*.js"
+
+  docker exec "$containername" \
+    /bin/bash -c \
+    "grep -q 'this.onSlideShowAdvance,$slideshow_speed_ms' \
+    /usr/lib/plexmediaserver/Resources/Plug-ins*/WebClient.bundle/Contents/Resources/js/chunk*.js" \
+  || { echo "Slideshow speed not set!"; exit 1; }
+  echo "Slideshow speed set to $slideshow_speed_ms"
+fi
+echo "$hostname started in container $containername at http://$hostip:$port/web"
