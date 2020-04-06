@@ -7,7 +7,7 @@ Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A
 
 After cloning or downloading this repository, `cd` to it and follow the instructions below.
 
-### Docker
+### `Docker`
 If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
 ### `start`
