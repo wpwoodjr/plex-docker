@@ -70,60 +70,40 @@ If you stop Plex, it will not restart again until you restart it with `./start` 
 The `conf` file is where you customize your installation as required. `conf` contains the following configurable settings:
 
 #### `plex_dir`
-Directory where Plex's database will reside.  You should not need to change this.
+Directory where Plex's database will reside.  Defaults to `<current directory>/database`. You should not need to change this.
 
 #### `media`
 Directory containing your media files.
 
-Defaults to `media` in `plex_dir`.  You can change `music` to point directly to your music directory, or alternatively you can create a symbolic link in `subsonic_dir` from `music` to your music directory:
+Defaults to `media` in `plex_dir`.  You can change `media` to point directly to your media directory, or alternatively you can create a symbolic link in `plex_dir` from `media` to your media directory:
 ```
-ln -s /your-music/ music
+ln -s /your-media/ database/media
 ```
-If you don't change `music`, a new directory called `music` will be created in `subsonic_dir`.
+You could also copy all your media to `database/media`.
 
-#### `videos`
-Directory containing your video files.
+If you don't change, copy, or create a symbolic link for `media`, by default a new directory called `media` will be created in `plex_dir`.
 
-Defaults to `videos` in `subsonic_dir`.  You can change `videos` to point directly to your videos directory, or alternatively you can create a symbolic link in `subsonic_dir` from `videos` to your videos directory:
+#### `database`
+This is where Plex maintains its database and configuration.
+
+Defaults to `database` in `plex_dir`.  You can change `database` to point directly to your Plex database directory, or alternatively you can create a symbolic link in `plex_dir` from `data` to your Plex database directory:
 ```
-ln -s /your-videos/ videos
+ln -s /your-plex-database/ database/database
 ```
-If you don't change `videos`, a new directory called `videos` will be created in `subsonic_dir`.
+If you don't change or create a symbolic link for `database`, by default a new directory called `database` will be created in `plex_dir`.
 
-**Note:** Unlike the `music` folder, the `videos` folder is not automatically added for you in Subsonic.  In the Subsonic browser interface, go to `Settings...Media Folders` and add it as a media folder with name `Videos` in folder `/var/videos`.
+#### `transcode`
+This is where Plex puts temporary files during transcoding.  You should not need to change this.
 
-#### `playlists`
-Directory containing your playlist files.
-
-Defaults to `playlists` in `subsonic_dir`.  You can change `playlists` to point directly to your playlists directory, or alternatively you can create a symbolic link in `subsonic_dir` from `playlists` to your playlists directory:
+Defaults to `transcode` in `plex_dir`.  You can change `transcode` to point directly to your transcode temporary space, or alternatively you can create a symbolic link in `plex_dir` from `transcode`:
 ```
-ln -s /your-playlists/ playlists
+ln -s /your-plex-transcode-area/ database/transcode
 ```
-If you don't change `playlists`, a new directory called `playlists` will be created in `subsonic_dir`.
-
-#### `podcasts`
-Directory containing your podcasts.
-
-Defaults to `podcasts` in `subsonic_dir`.  You can change `podcasts` to point directly to your podcasts directory, or alternatively you can create a symbolic link in `subsonic_dir` from `podcasts` to your podcasts directory:
-```
-ln -s /your-podcasts/ podcasts
-```
-If you don't change `podcasts`, a new directory called `podcasts` will be created in `subsonic_dir`.
-
-#### `data`
-This is where Subsonic maintains its database and configuration.
-
-Defaults to `data` in `subsonic_dir`.  You can change `data` to point directly to your Subsonic data directory, or alternatively you can create a symbolic link in `subsonic_dir` from `data` to your Subsonic data directory:
-```
-ln -s /your-subsonic-data/ data
-```
-If you don't change `data`, a new directory called `data` will be created in `subsonic_dir`.
-
-#### `mem`
-The memory limit (max Java heap size) in megabytes.  Defaults to `250`. Unless your music collection is huge, this should be fine.
+If you don't change or create a symbolic link for `transcode`, by default a new directory called `transcode` will be created in `plex_dir`.
 
 #### `port`
-The port on which Subsonic will listen for incoming HTTP traffic.  Subsonic's default port is `4040`, but you may prefer to set it to something else since it is a well known port.
+The port on which Plex will listen for incoming HTTP traffic.  Plex's default port is `32400`, but you may prefer to set it to something else if you are running in Docker `bridged` mode.
+
 `port` should be greater than `1024`.
 
 #### `https_port`
