@@ -10,7 +10,7 @@ After cloning or downloading this repository, `cd` to it and follow the instruct
 ### `Docker`
 If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
-### `start`
+### `./start`
 After configuring settings (see `conf` section below), run:
 ```
 ./start
@@ -59,7 +59,7 @@ To have Plex automatically restart when the system reboots, you need to enable D
 sudo systemctl enable docker
 ```
 
-### `stop`
+### `./stop`
 To stop Plex, run:
 ```
 ./stop
@@ -140,7 +140,7 @@ Docker's bridge network address range.  Normally you won't need to change this.
 #### `image`
 This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update itself to the latest version of Plex Media Server every time it is started.  If you don't want auto updates, you can use the `build` command (see below) to build a local Docker image named `plex` and run that instead.  It's faster to start up too.
 
-### `build`
+### `./build`
 This will build a local Plex image, based on the latest version of Plex Media Server, and upgrade other system packages.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
 ```
 ./build
