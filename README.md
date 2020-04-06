@@ -1,5 +1,5 @@
 # plex-docker
-Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the slideshow speed on the local web instance of Plex.
+Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the slideshow speed on the local web instance of Plex, and to run more than one Plex server on a given host.
 
 ![Plex](https://i1.wp.com/softsfile.info/wp-content/uploads/2019/10/plex-pms-icon.png?fit=256%2C256)
 
@@ -101,29 +101,24 @@ ln -s /your-plex-transcode-area/ database/transcode
 ```
 If you don't change or create a symbolic link for `transcode`, by default a new directory called `transcode` will be created in `plex_dir`.
 
-#### `servername`
-servername="Plex Server"
-
-#### `containername`
-="plex"
-
 #### `port`
-The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but you may need to set it to something else, for example if you are running the Plex container in Docker `bridged` mode, and want to run two or more containers, each will need a different port. `port` should be greater than `1024`.
+The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but if you are running two or more Plex servers, each will need a different port. `port` should be greater than `1024`.
 
 #### `mode`
-The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes enable all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  
+The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes expose all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  You can only run one Plex server in either `host` or `bridged` modes on a given host.
 
-`http-only` runs in bridged mode and only exposes Plex's HTTP port.
+`http-only` runs in bridged mode and only exposes Plex's HTTP port.  You can run one or more Plex servers in `http-only` mode as long as each one has a unique `port`.  You can also run one Plex server in either `host` or `bridged` modes, and one or more additional Plex servers in `http-only` mode.
 
-You can only run one Plex server with all network ports exposed on a given host.  You may run additional Plex servers in `http-only` mode.  If you do this, give each Plex server a unique `port` (see above).
+Defaults to `host`.  In `host` mode the port is always 32400.
 
-Defaults to `host`.
+#### `servername`
+The name of your Plex server as displayed in Plex.  Defaults to "Plex Server".
 
-#### `docker-network`
-Docker's bridge network address range.  Normally you won't need to change this.
+#### `containername`
+The name of the container that Plex runs in.  Defaults to `plex`.
 
-#### `hostip`
-The IP address of the host that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
+#### `plexlogin`
+Whether to require users to log in to access Plex.  Defaults to `true`.  Set to `false` to allow access to the Plex server from your local network without logging in.
 
 #### `slideshow_speed_ms`
 The number of milliseconds a slide remains on-screen before switching to the next slide.  Only applicable when viewing the slideshow in Plex's local web interface, from your local server (ie not from `app.plex.tv`).  Defaults to 5000 milliseconds (Plex's default).
@@ -136,12 +131,23 @@ See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https:
 #### `uid` and `gid`
 By default Plex runs in the container under the user `plex` with your uid and gid.  If your uid or gid doesn't have read/write privileges to your media directories, set `uid` and/or `gid` to a value which will grant user `plex` read/write permissions in the media directories.
 
+#### `hostip`
+The IP address of the host that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
+
+#### `docker-network`
+Docker's bridge network address range.  Normally you won't need to change this.
+
 #### `image`
-This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update itslef to the latest version of Plex every time it is started.  If you don't want auto updates, you can use the `build` command (see below) to build a local image named `plex` and run that instead.  It's faster to start up too.
+This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update itself to the latest version of Plex Media Server every time it is started.  If you don't want auto updates, you can use the `build` command (see below) to build a local Docker image named `plex` and run that instead.  It's faster to start up too.
 
 ### `build`
-This will build a local Plex image, based on the latest version, and upgrade other system packages.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
+This will build a local Plex image, based on the latest version of Plex Media Server, and upgrade other system packages.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
 ```
 ./build
 ```
-Then set the `image` setting in `conf` to `plex` and start Plex.
+Then set the `image` setting in `conf` to `plex` and start Plex with the `start` script.
+
+## Running more than one Plex server
+You can only run one Plex server in either `host` or `bridged` modes on a given host.  You can run one or more Plex servers in `http-only` mode as long as each one has a unique `port`.  You can also run one Plex server in either `host` or `bridged` modes, and one or more additional Plex servers in `http-only` mode.
+
+To run another Plex server, make a copy of these files in another directoy and configure the `conf` file for the additional server.  Give it a different `port`, `containername`, and `servername`.
