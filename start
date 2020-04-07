@@ -44,7 +44,7 @@ else  # bridged
   -p 32414:32414/udp"
   allowed_networks="$allowed_networks,$docker_network"
 fi
-[ $plexlogin ] || mode_args="$mode_args --env ALLOWED_NETWORKS=$allowed_networks"
+[ $plexlogin = true ] || mode_args="$mode_args --env ALLOWED_NETWORKS=$allowed_networks"
 
 set -x
 docker run -d \
