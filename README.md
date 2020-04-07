@@ -77,15 +77,17 @@ Directory containing your media files.
 
 Defaults to `media` in `plex_dir`.  You can change the value of `media` to point directly to your media directory, or alternatively you can create a symbolic link in `plex_dir` from `media` to your media directory:
 ```
+mkdir -p database
 ln -s /your-media/ database/media
 ```
-Then in Plex when you go to add a folder, your media will be in `/media`.
+Then in Plex when you go to add a folder, add `/media`.
 
 If your media is in different directories, and there is a common parent, then link the parent:
 ```
+mkdir -p database
 ln -s /parent/ database/media
 ```
-Then in Plex, drill down from `/media` to add a folder.
+Then in Plex, drill down from `/media` to find and add a media folder.
 
 You could also copy all your media to `database/media`.
 
