@@ -109,10 +109,10 @@ The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridg
 
 `http-only` runs in bridged mode and only exposes Plex's HTTP port.  You can run one Plex server in either `host`, `bridged`, or `http-only` modes, and add additional Plex server(s) in `http-only` mode.  Ensure that each Plex server has a unique `port`.
 
-Defaults to `host`.  In `host` mode the port is always 32400.
+Defaults to `host`.  In `host` mode the port is always `32400`.
 
 #### `servername`
-The name of your Plex server as displayed in Plex.  Defaults to "Plex Server".
+The name of your Plex server as displayed in Plex.  Defaults to `Plex Server`.
 
 #### `containername`
 The name of the container that Plex runs in.  Defaults to `plex`.
