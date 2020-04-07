@@ -75,10 +75,18 @@ Directory where Plex's database will reside.  Defaults to `<current directory>/d
 #### `media`
 Directory containing your media files.
 
-Defaults to `media` in `plex_dir`.  You can change `media` to point directly to your media directory, or alternatively you can create a symbolic link in `plex_dir` from `media` to your media directory:
+Defaults to `media` in `plex_dir`.  You can change the value of `media` to point directly to your media directory, or alternatively you can create a symbolic link in `plex_dir` from `media` to your media directory:
 ```
 ln -s /your-media/ database/media
 ```
+Then in Plex when you go to add a folder, your media will be in `/media`.
+
+If your media is in different directories, and there is a common parent, then link the parent:
+```
+ln -s /parent/ database/media
+```
+Then in Plex, drill down from `/media` to add a folder.
+
 You could also copy all your media to `database/media`.
 
 If you don't change, copy, or create a symbolic link for `media`, by default a new directory called `media` will be created in `plex_dir`.
@@ -86,7 +94,7 @@ If you don't change, copy, or create a symbolic link for `media`, by default a n
 #### `database`
 This is where Plex maintains its database and configuration.
 
-Defaults to `database` in `plex_dir`.  You can change `database` to point directly to your Plex database directory, or alternatively you can create a symbolic link in `plex_dir` from `data` to your Plex database directory:
+Defaults to `database` in `plex_dir`.  You can change the value of `database` to point directly to your Plex database directory, or alternatively you can create a symbolic link in `plex_dir` from `data` to your Plex database directory:
 ```
 ln -s /your-plex-database/ database/database
 ```
@@ -95,7 +103,7 @@ If you don't change or create a symbolic link for `database`, by default a new d
 #### `transcode`
 This is where Plex puts temporary files during transcoding.  You should not need to change this.
 
-Defaults to `transcode` in `plex_dir`.  You can change `transcode` to point directly to your transcode temporary space, or alternatively you can create a symbolic link in `plex_dir` from `transcode`:
+Defaults to `transcode` in `plex_dir`.  You can change the value of `transcode` to point directly to your transcode temporary space, or alternatively you can create a symbolic link in `plex_dir` from `transcode`:
 ```
 ln -s /your-plex-transcode-area/ database/transcode
 ```
