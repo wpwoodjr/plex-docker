@@ -77,7 +77,7 @@ The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridg
 Indicates whether you plan to "claim" this server by logging it in.  Defaults to `true`.  Set `plexlogin` to `false` if you don't plan to access this server from https://app.plex.tv/.
 
 ### `slideshow_speed_ms`
-The number of milliseconds a slide remains on-screen before switching to the next slide.  Since this relies on a change to the Javascript of the Plex Web Interface, it is only applicable when viewing the slideshow from your local server (for example from http://10.0.1.15:34200/web, not from https://app.plex.tv).  Defaults to 5000 milliseconds (Plex's default).
+The number of milliseconds a slide remains on-screen before switching to the next slide.  Since this relies on a change to the Javascript of the Plex Web Interface, it is only applicable when viewing the slideshow from your local Plex server (for example from http://10.0.1.15:34200/web, not from https://app.plex.tv).  See [Opening Plex Web App](https://support.plex.tv/articles/200288666-opening-plex-web-app/) for more info. Defaults to 5000 milliseconds (Plex's default).
 
 Since this feature relies on undocumented information, it could stop working any time there is a Plex upgrade.
 
