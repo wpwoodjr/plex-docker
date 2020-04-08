@@ -1,14 +1,24 @@
 #!/bin/bash
-# first run ./build to build the Plex Docker container
-# then configure Plex by editing ./conf
+# First configure Plex by editing ./conf
 # then run ./start to start Plex (this file)
 # run ./stop to stop Plex
 
 set -e
+plex_db="$(pwd)/database"
 source ./conf
 
-[ -d "$media" ] || mkdir -pv "$media"
-[ -d "$database" ] || mkdir -pv "$database"
+media_vols=()
+for m in "${media_folders[@]}"
+do
+  dir="${!m}"
+  [ -d "$dir" ] && media_vols+=(-v "$dir:/$m")
+done
+# [ -d "$media" ] || mkdir -pv "$media"
+[ "$media_vols" = "" ] && echo "No media directories, please edit conf file" && exit 1
+
+config=${config:-"$plex_db/config"}
+[ -d "$config" ] || mkdir -pv "$config"
+transcode=${transcode:-"$plex_db/transcode"}
 [ -d "$transcode" ] || mkdir -pv "$transcode"
 
 if [ "$hostip" = "" ]
@@ -23,42 +33,48 @@ then
   fi
 fi
 
-allowed_networks="$hostip/24"
+allowed_networks=" "
+advertise_ip=" "
 if [ "$mode" = "host" ]
 then
-  mode_args="--network host"
   port=32400
-elif [ "$mode" = "http-only" ]
-then
-  mode_args="-p $port:32400/tcp --env ADVERTISE_IP=http://$hostip:$port/"
-  allowed_networks="$allowed_networks,$docker_network"
-else  # bridged
-  mode_args="-p $port:32400/tcp --env ADVERTISE_IP=http://$hostip:$port/ \
-  -p 3005:3005/tcp \
-  -p 8324:8324/tcp \
-  -p 32469:32469/tcp \
-  -p 1900:1900/udp \
-  -p 32410:32410/udp \
-  -p 32412:32412/udp \
-  -p 32413:32413/udp \
-  -p 32414:32414/udp"
-  allowed_networks="$allowed_networks,$docker_network"
+  network_args=(--network "host")
+  [ $plexlogin != true ] && allowed_networks="$hostip/24"
+else
+  network_args=(-p "$port:32400/tcp")
+  if [ "$mode" = "bridged" ]
+  then
+    network_args+=( \
+      -p 3005:3005/tcp \
+      -p 8324:8324/tcp \
+      -p 32469:32469/tcp \
+      -p 1900:1900/udp \
+      -p 32410:32410/udp \
+      -p 32412:32412/udp \
+      -p 32413:32413/udp \
+      -p 32414:32414/udp)
+  fi
+  [ $plexlogin != true ] && allowed_networks="$hostip/24,$docker_network"
+  [ $plexlogin = true ] && advertise_ip="http://$hostip:$port/"
 fi
-[ $plexlogin = true ] || mode_args="$mode_args --env ALLOWED_NETWORKS=$allowed_networks"
+network_args+=(--env ALLOWED_NETWORKS="$allowed_networks" --env ADVERTISE_IP="$advertise_ip")
 
+rm=""
+[ "$restart_policy" = "no" ] && rm="--rm"
 set -x
 docker run -d \
   --name "$containername" \
+  --hostname "$servername" \
+  --restart "$restart_policy" $rm \
+  "${media_vols[@]}" \
+  -v "$config:/config" \
+  -v "$transcode:/transcode" \
+  "${network_args[@]}" \
   --env TZ="$tz" \
   --env PLEX_UID="$uid" \
   --env PLEX_GID="$gid" \
-  --hostname "$servername" \
-  -v "$media:/media" \
-  -v "$database:/config" \
-  -v "$transcode:/transcode" \
   --device "/dev/dri:/dev/dri" \
-  $mode_args \
-  ${1:-"$image"}
+  "$image"
   # --env PLEX_CLAIM="<claimToken>" \
 set +x
 
@@ -73,6 +89,9 @@ wait() {
 }
 
 wait 30 "Starting Plex Media Server." "docker logs -f $containername"
+echo -e "\n$servername started in container $containername at http://$hostip:$port/web"
+echo "If this is the first time running this Plex server, do initial setup at http://localhost:$port/web"
+echo "using an incognito browser on the Docker host machine."
 
 if [ "$slideshow_speed_ms" != "default" ]
 then
@@ -86,6 +105,5 @@ then
     "grep -q 'this.onSlideShowAdvance,$slideshow_speed_ms' \
     /usr/lib/plexmediaserver/Resources/Plug-ins*/WebClient.bundle/Contents/Resources/js/chunk*.js" \
   || { echo "Slideshow speed not set!"; exit 1; }
-  echo "Slideshow speed set to $slideshow_speed_ms"
+  echo "Slideshow speed set to $slideshow_speed_ms milliseconds."
 fi
-echo "$servername started in container $containername at http://$hostip:$port/web"

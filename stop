@@ -1,6 +1,5 @@
 #!/bin/bash
-# first run ./build to build the Plex Docker container
-# then configure Plex by editing ./conf
+# First configure Plex by editing ./conf
 # then run ./start to start Plex
 # run ./stop to stop Plex (this file)
 
@@ -8,5 +7,5 @@ source ./conf
 
 echo "removing $containername container"
 docker container stop $containername >/dev/null
-docker container rm $containername >/dev/null
-echo "run ./start to restart $hostname"
+[ "$restart_policy" != "no" ] && docker container rm $containername >/dev/null
+echo "run ./start to restart $servername"

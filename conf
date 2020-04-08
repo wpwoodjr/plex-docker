@@ -1,30 +1,42 @@
 #!/bin/bash
-# first run ./build to build the Plex Docker container
-# then configure Plex by editing ./conf (this file) - see README.md for help
+# Configure Plex by editing ./conf (this file) - see README.md for help
 # then run ./start to start Plex
 # run ./stop to stop Plex
 
 # see README.md before changing settings below
 
-plex_dir="$(pwd)/database"
-media="$plex_dir/media"
-database="$plex_dir/database"
-transcode="$plex_dir/transcode"
+# configure media directories, using full path names
+# rename these if you need to match a current Plex setup
+# See README.md for more info
+media_folders=(media media1 media2 media3)
+media=""
+media1=""
+media2=""
+media3=""
 
-port=32400
-mode="host" # "host" or "bridged" or "http-only"
+# if you already have a Plex media config database, enter the full path name here
+# otherwise leave this blank unless you want the Plex database in a particular location
+config=""
+# leave this blank unless you want transcoding temp files in a particular location
+transcode=""
+
 servername="Plex Server"
 containername="plex"
+port=32400
+# "host" or "bridged" or "http-only"
+mode="host"
 
 plexlogin=true
 slideshow_speed_ms="default"
 tz="America/New_York"
+
 uid="$(id -u)"
 gid="$(id -g)"
 
 hostip=""   # normally leave blank
 docker_network="172.16.0.0/12"
 image="plexinc/pms-docker:public"
+restart_policy="always"
 
 if [ -f "./myconf" ]
 then
