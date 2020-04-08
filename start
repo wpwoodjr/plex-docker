@@ -92,8 +92,8 @@ wait() {
 
 wait 30 "Starting Plex Media Server." "docker logs -f $containername"
 echo -e "\n$servername started in container $containername at http://$hostip:$port/web"
-echo "If this is the first time running this Plex server, using an incognito browser on"
-echo "the Docker host machine do initial setup at http://localhost:$port/web"
+echo "If this is the first time running this Plex server, use an incognito browser on"
+echo "the Docker host machine to do initial setup at http://localhost:$port/web"
 
 if [ "$slideshow_speed_ms" != "default" ]
 then
