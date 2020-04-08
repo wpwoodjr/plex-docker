@@ -73,7 +73,6 @@ docker run -d \
   --env TZ="$tz" \
   --env PLEX_UID="$uid" \
   --env PLEX_GID="$gid" \
-  --device "/dev/dri:/dev/dri" \
   "$image"
   # --env PLEX_CLAIM="<claimToken>" \
 set +x
