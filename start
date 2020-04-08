@@ -1,7 +1,7 @@
 #!/bin/bash
 # First configure Plex by editing ./conf
 # then run ./start to start Plex (this file)
-# run ./stop to stop Plex 
+# run ./stop to stop Plex
 
 set -e
 plex_db="$(pwd)/database"
@@ -90,8 +90,8 @@ wait() {
 
 wait 30 "Starting Plex Media Server." "docker logs -f $containername"
 echo -e "\n$servername started in container $containername at http://$hostip:$port/web"
-echo "If this is the first time running this Plex server, do initial setup at http://localhost:$port/web"
-echo "using an incognito browser on the Docker host machine."
+echo "If this is the first time running this Plex server, using an incognito browser on"
+echo "the Docker host machine do initial setup at http://localhost:$port/web"
 
 if [ "$slideshow_speed_ms" != "default" ]
 then
