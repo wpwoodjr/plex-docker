@@ -1,17 +1,104 @@
 # plex-docker
-Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the slideshow speed on the local web instance of Plex, and to run more than one Plex server on a given host.
+Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the slideshow speed, and to run multiple Plex servers on one host.
 
 ![Plex](https://i1.wp.com/softsfile.info/wp-content/uploads/2019/10/plex-pms-icon.png?fit=256%2C256)
 
 ## Getting started
 
-After cloning or downloading this repository, `cd` to it and follow the instructions below.
+Clone or download this repository, the `cd` to it and follow the instructions below.
 
-### `Docker`
+## Docker
 If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
-### `./start`
-After configuring settings (see `conf` section below), run:
+## Configuring media folders
+The `conf` file is where you customize your Plex server installation.
+First configure your media folders.  In `conf` you will see:
+```
+media_folders=(media media1 media2 media3)
+media=""
+media1=""
+media2=""
+media3=""
+```
+Set these up however you like.  For example, if you are starting from scratch, you might just do:
+```
+media_folders=(music pix videos)
+music="/home/user/Music"
+pix="/home/user/Pictures"
+videos="/home/user/Videos"
+```
+Then in Plex when you go to add a folder, your music will be in `/music`, pictures in `/pix`, and videos in `/videos'.
+
+If you have an existing non-Dockerized Plex setup, and want to keep your existing meta-data, you might do:
+```
+media_folders=(home)
+home="/home"
+```
+Then in Plex when you go to add a folder, your music will be in `/home/user/Music`, pictures in `/home/user/Pictures`, and videos in `/home/user/Videos`.
+
+## Other settings
+Other settings in `conf` may be configured as follows:
+
+### `config`
+This is where Plex maintains its media database and configuration.
+
+If you already have a Plex media database, enter the full path name,
+otherwise leave this blank (unless you want the Plex database in a particular location).
+
+If you don't change the value of `config`, by default a new directory named `config` will be created in directory `database` under the current working directory.
+
+### `transcode`
+This is where Plex keeps temporary files during transcoding.  You probably do not need to change this, however you can change the value of `transcode` to the full path name of a transcode temporary space.
+
+If you don't change the value of `transcode`, by default a new directory named `transcode` will be created in directory `database` under the current working directory.
+
+### `servername`
+The name of your Plex server as displayed in Plex.  Defaults to `Plex Server`.
+
+### `containername`
+The name of the container that Plex runs in.  Defaults to `plex`.
+
+### `port`
+The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but if you are running two or more Plex servers, each will need a different HTTP port. `port` should be greater than `1024`.
+
+### `mode`
+The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes expose all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  You can only run one Plex server in either `host` or `bridged` mode on a given host machine.
+
+`http-only` runs in bridged mode and only exposes the HTTP `port` defined above.  You can run one Plex server in either `host`, `bridged`, or `http-only` modes, and add additional Plex server(s) in `http-only` mode.  Ensure that each Plex server has a unique `port`.
+
+`mode` defaults to `host`.  In `host` mode the `port` is always `32400`.
+
+### `plexlogin`
+Indicates whether you plan to "claim" this server by logging it in.  Defaults to `true`.  Set `plexlogin` to `false` if you don't plan to access this server from https://app.plex.tv/.
+
+### `slideshow_speed_ms`
+The number of milliseconds a slide remains on-screen before switching to the next slide.  
+Since this relies on a change to the Javascript of the Plex Web Interface, it is only applicable when viewing the slideshow in Plex's web interface, from your local server (for example from http://10.0.1.15:34200/web, not from https://app.plex.tv).  Defaults to 5000 milliseconds (Plex's default).
+
+Since this feature relies on undocumented information, it could stop working any time there is a Plex upgrade.
+
+### `tz`
+Set this to your time zone so that Plex's time for running scheduled tasks reflects your time zone.  By default `tz` is set to `America/New_York`.
+
+See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more info.
+
+### `uid` and `gid`
+By default Plex runs in the container under the user `plex` with your uid and gid.  If your uid or gid doesn't have read/write privileges to your media directories, set `uid` and/or `gid` to a value which does have read/write permissions in the media directories.
+
+### `hostip`
+The IP address of the host machine that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
+
+### `docker-network`
+Docker's bridge network address range.  Normally you won't need to change this.
+
+### `image`
+This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update to the latest version of Plex Media Server every time the container is run.  If you want the beta version of Plex, change `public` to `beta`.  Note, beta versions are only available to Plex Pass subscribers.
+
+### `restart-policy`
+The restart policy for the Plex container.  Defaults to `always`.  If you don't want the container to restart on reboot, set it to `no`.
+
+## Starting the Plex container
+After configuring settings (see above), run:
 ```
 ./start
 ```
@@ -49,118 +136,46 @@ Processing triggers for libc-bin (2.23-0ubuntu11) ...
 [services.d] starting services
 [services.d] done.
 Starting Plex Media Server.
-Slideshow speed set to 4000
-Plex Server started in container plex at http://10.0.1.15:32400/web
+
+Plex Server started in container plex at http://10.0.1.15:34200/web
+If this is the first time running this Plex server, do initial setup at http://localhost:34200/web
+using an incognito browser on the Docker host machine.
+Slideshow speed set to 4000 milliseconds.
 ```
-Plex should be up and running!  To go to its browser interface, note the last line in the log output, and browse to the web address. For example, browse to `10.0.1.15:32400/web`
+Plex should be up and running!  To go to its browser interface, note the "Plex server started" line in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
+
+When you start a new container, it's a good idea to do initial setup by browsing to it using `localhost` from the local Docker host machine in an incognito browser, as described near the end of the output above.
 
 To have Plex automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
 ```
 sudo systemctl enable docker
 ```
 
-### `./stop`
+## Stopping the Plex container
 To stop Plex, run:
 ```
 ./stop
 ```
-If you stop Plex, it will not restart again until you restart it with `./start` as above.
+After you stop Plex, it will not restart again until you restart it with `./start` as described above.
 
-### `conf`
-The `conf` file is where you customize your installation as required. `conf` contains the following configurable settings:
+## Finishing up
+Once the server is up and running, go to its settings pages to finsh configuring it. If you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting on the `Network` settings page.
 
-#### `plex_dir`
-Directory where Plex's database will reside.  Defaults to `<current directory>/database`. You should not need to change this.
+The `plexlogin` setting, described above, directly affects the values of these `Network` settings:
+### `Custom server access URLs`
+If `plexlogin` is `true`, and `mode` is `bridged` or `http-only`, this will be set to `http://ip:port/` where `ip` is the ip address of your host machine and `port` is as you configured it in `conf`.  Otherwise this will be set to blank.
 
-#### `media`
-Directory containing your media files.
+### `List of IP addresses and networks that are allowed without auth`
+If `plexlogin` is `false`, this will be set to `ip/24,docker-network` where `ip` is the ip address of your host machine, and `docker-network ` is as you configured it in `conf`.
+Otherwise this will be set to blank.
 
-Defaults to `media` in `plex_dir`.  You can change the value of `media` to point directly to your media directory, or alternatively you can create a symbolic link in `plex_dir` from `media` to your media directory:
-```
-mkdir -p database
-ln -s /your-media/ database/media
-```
-Then in Plex when you go to add a folder, add `/media`.
-
-If your media is in different directories, and there is a common parent, then link the parent:
-```
-mkdir -p database
-ln -s /parent/ database/media
-```
-Then in Plex, drill down from `/media` to find and add a media folder.
-
-You could also copy all your media to `database/media`.
-
-If you don't change, copy, or create a symbolic link for `media`, by default a new directory called `media` will be created in `plex_dir`.
-
-#### `database`
-This is where Plex maintains its database and configuration.
-
-Defaults to `database` in `plex_dir`.  You can change the value of `database` to point directly to your Plex database directory, or alternatively you can create a symbolic link in `plex_dir` from `data` to your Plex database directory:
-```
-ln -s /your-plex-database/ database/database
-```
-If you don't change or create a symbolic link for `database`, by default a new directory called `database` will be created in `plex_dir`.
-
-#### `transcode`
-This is where Plex puts temporary files during transcoding.  You should not need to change this.
-
-Defaults to `transcode` in `plex_dir`.  You can change the value of `transcode` to point directly to your transcode temporary space, or alternatively you can create a symbolic link in `plex_dir` from `transcode`:
-```
-ln -s /your-plex-transcode-area/ database/transcode
-```
-If you don't change or create a symbolic link for `transcode`, by default a new directory called `transcode` will be created in `plex_dir`.
-
-#### `port`
-The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but if you are running two or more Plex servers, each will need a different port. `port` should be greater than `1024`.
-
-#### `mode`
-The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes expose all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  You can only run one Plex server in either `host` or `bridged` modes on a given host.
-
-`http-only` runs in bridged mode and only exposes Plex's HTTP port.  You can run one Plex server in either `host`, `bridged`, or `http-only` modes, and add additional Plex server(s) in `http-only` mode.  Ensure that each Plex server has a unique `port`.
-
-Defaults to `host`.  In `host` mode the port is always `32400`.
-
-#### `servername`
-The name of your Plex server as displayed in Plex.  Defaults to `Plex Server`.
-
-#### `containername`
-The name of the container that Plex runs in.  Defaults to `plex`.
-
-#### `plexlogin`
-Whether to require users to log in to access Plex.  Defaults to `true`.  Set to `false` to allow access to the Plex server from your local network without logging in.
-
-#### `slideshow_speed_ms`
-The number of milliseconds a slide remains on-screen before switching to the next slide.  Only applicable when viewing the slideshow in Plex's local web interface, from your local server (ie not from `app.plex.tv`).  Defaults to 5000 milliseconds (Plex's default).
-
-#### `tz`
-Set this to your time zone so that Plex's scheduled time for running scheduled tasks reflects your time zone.  By default time zone is set to `America/New_York`.
-
-See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more info.
-
-#### `uid` and `gid`
-By default Plex runs in the container under the user `plex` with your uid and gid.  If your uid or gid doesn't have read/write privileges to your media directories, set `uid` and/or `gid` to a value which will grant user `plex` read/write permissions in the media directories.
-
-#### `hostip`
-The IP address of the host that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
-
-#### `docker-network`
-Docker's bridge network address range.  Normally you won't need to change this.
-
-#### `image`
-This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update itself to the latest version of Plex Media Server every time it is started.  If you don't want auto updates, you can use the `build` command (see below) to build a local Docker image named `plex` and run that instead.  It's faster to start up too.
-
-### `./build`
-This will build a local Plex image, based on the latest version of Plex Media Server, and upgrade other system packages.  You can run this instead of the "public" Docker image if you don't want Plex to update itself every time it starts:
-```
-./build
-```
-Then set the `image` setting in `conf` to `plex` and start Plex with the `start` script.
+## Plex updates
+If you get a server update notice, just `./stop` then `./start` the server to get the update.
 
 ## Running more than one Plex server
-You can run one Plex server in `host`, `bridged`, or `http-only` modes on a given host.  You can add additional Plex server(s), but only in `http-only` mode.  When running more than one, ensure each one has a unique `port`.  
+You can run zero or one Plex server(s) in `host` or `bridged` mode on a given host machine.  You can run zero or more Plex server(s) in `http-only` mode. 
 
-To run another Plex server, make a copy of these files in another directory and configure the `conf` file for the additional server.  Configure the `media`, `database`, and `transcode` directories, and give it a different `port`, `containername`, and `servername`.
+To run a second Plex server, make a copy of these Github files in another directory and configure the `conf` file for the additional server.  Be sure to give the server a different `servername`, `containername`, and `port`.  Set `mode` as well.
 
 ## More info
 For more information, see the [Official Docker container for Plex Media Server](https://github.com/plexinc/pms-docker) documentation.
