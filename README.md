@@ -158,8 +158,12 @@ To stop Plex, run:
 After you stop Plex, it will not restart again until you restart it with `./start` as described above.
 
 ## Finishing up
-Once the server is up and running, go to its settings pages and finsh configuring it. If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting on the `Network` settings page.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as you configured it in `conf`.
+Once the server is up and running, go to its settings pages and finsh configuring it. 
 
+### `LAN Networks`
+If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting on the `Network` settings page.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as you configured it in `conf`.
+
+### Effect of `plexlogin` on network settings
 The `plexlogin` setting, described above, directly affects the values of these `Network` settings:
 #### `Custom server access URLs`
 If `plexlogin` is `true`, and `mode` is `bridged` or `http-only`, this will be set to `http://ip:port/` where `ip` is the ip address of your host machine and `port` is as you configured it in `conf`.  Otherwise this will be set to blank.
