@@ -7,10 +7,15 @@ Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A
 
 Clone or download this repository, then `cd` to it and follow the instructions below.
 
-## Docker
+### Docker
 If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
-## Configuring media folders
+To have Plex automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/engine/install/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
+```
+sudo systemctl enable docker
+```
+
+### Configuring media folders
 The `conf` file is where you customize your Plex server installation.
 First configure your media folders.  In `conf` you will see:
 ```
@@ -37,7 +42,7 @@ home="/home"
 Then in Plex your music will still be in `/home/user/Music`, pictures in `/home/user/Pictures`, and videos in `/home/user/Videos`.
 
 ## Other settings (optional)
-At this point you can proceed to `Starting the Plex container` below, or you can tweak these settings in `conf`:
+At this point you can proceed to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container) below, or you can tweak these settings in `conf`:
 
 ### `config`
 This is where Plex maintains its media database and configuration.
@@ -155,11 +160,6 @@ Plex should be up and running!  To go to its browser interface, note the line st
 
 When you start a new container, it's a good idea to do initial setup by browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above.
 
-To have Plex automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/engine/install/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
-```
-sudo systemctl enable docker
-```
-
 ## Stopping the Plex container
 To stop Plex, run:
 ```
@@ -168,9 +168,9 @@ To stop Plex, run:
 After you stop Plex, it will not restart again until you restart it with `./start` as described above.
 
 ## Finishing up
-Once the server is up and running, go to its settings pages and finsh configuring it. 
+Once the server is up and running, go to its settings pages and finish configuring it. 
 
-### `LAN Networks`
+### LAN Networks
 If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting on the `Network` settings page.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as you configured it in `conf`.
 
 ### Effect of `plexlogin` on network settings
@@ -186,7 +186,7 @@ Otherwise this will be set to blank.
 If you get a server update notice, just `./stop` then `./start` the server to get the update.
 
 ## Running more than one Plex server
-You can run zero or one Plex server(s) in `host` or `bridged` mode on a given host machine.  You can run zero or more Plex server(s) in `http-only` mode. 
+You can run zero or one Plex server(s) in `host` or `bridged` mode on a given host machine.  You can also run zero or more Plex server(s) in `http-only` mode. 
 
 To run a second Plex server, make a copy of these Github files in another directory and configure the `conf` file for the additional server.  Be sure to give the server a different `servername`, `containername`, and `port`.  Set `mode` as well.
 
