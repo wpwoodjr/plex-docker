@@ -38,6 +38,11 @@ docker_network="172.16.0.0/12"
 image="plexinc/pms-docker:public"
 restart_policy="always"
 
+#hardware_transcoding_device="/dev/dri:/dev/dri"
+hardware_transcoding_device=""
+
+plex_claim_token=""
+
 if [ -f "./myconf" ]
 then
   source ./myconf

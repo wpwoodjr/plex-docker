@@ -27,7 +27,7 @@ music="/home/user/Music"
 pix="/home/user/Pictures"
 videos="/home/user/Videos"
 ```
-Then in Plex when you go to add a library folder, your music will be in `/music`, pictures in `/pix`, and videos in `/videos'.
+Then in Plex when you go to add a library folder, your music will be in `/music`, pictures in `/pix`, and videos in `/videos`.
 
 If you have an existing non-Dockerized Plex setup, and want to keep your existing meta-data without re-scanning all your media, you might do:
 ```
@@ -36,8 +36,8 @@ home="/home"
 ```
 Then in Plex your music will still be in `/home/user/Music`, pictures in `/home/user/Pictures`, and videos in `/home/user/Videos`.
 
-## Other settings
-Other settings in `conf` should be configured as follows:
+## Other settings (optional)
+At this point you can proceed to `Starting the Plex container` below, or you can tweak these settings in `conf`:
 
 ### `config`
 This is where Plex maintains its media database and configuration.
@@ -93,8 +93,18 @@ Docker's bridge network address range.  Normally you won't need to change this.
 ### `image`
 This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update to the latest version of Plex Media Server every time the container is run.  If you want the beta version of Plex, change `public` to `beta`.  Note, beta versions are only available to Plex Pass subscribers.
 
-### `restart-policy`
+### `restart_policy`
 The restart policy for the Plex container.  Defaults to `always`.  If you don't want the container to restart on reboot, set it to `no`.
+
+### `hardware_transcoding_device`
+If your Docker host has access to a supported CPU with the Intel Quick Sync feature set and you are a current Plex Pass subscriber, you can enable hardware transcoding.  Set `hardware_transcoding_device` to the name of the kernel device, for example:
+```
+hardware_transcoding_device="/dev/dri:/dev/dri"
+```
+See [Intel Quick Sync Hardware Transcoding Support](https://github.com/plexinc/pms-docker/blob/master/README.md#intel-quick-sync-hardware-transcoding-support) for more info.
+
+### `plex_claim_token`
+The claim token for the Plex server to be automatically logged in to your Plex account. If the server is already logged in, this is ignored. You can obtain a claim token by visiting https://www.plex.tv/claim.
 
 ## Starting the Plex container
 After configuring settings in `conf`, run:
@@ -181,4 +191,4 @@ You can run zero or one Plex server(s) in `host` or `bridged` mode on a given ho
 To run a second Plex server, make a copy of these Github files in another directory and configure the `conf` file for the additional server.  Be sure to give the server a different `servername`, `containername`, and `port`.  Set `mode` as well.
 
 ## More info
-For more information, see the [Official Docker container for Plex Media Server](https://github.com/plexinc/pms-docker) documentation.
+For more information, or to help debug any issues, see the [Official Docker container for Plex Media Server](https://github.com/plexinc/pms-docker) documentation.

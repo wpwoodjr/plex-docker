@@ -61,6 +61,8 @@ network_args+=(--env ALLOWED_NETWORKS="$allowed_networks" --env ADVERTISE_IP="$a
 
 rm=""
 [ "$restart_policy" = "no" ] && rm="--rm"
+[ "$hardware_transcoding_device" != "" ] && hardware_transcoding_device="--device $hardware_transcoding_device"
+[ "$plex_claim_token" != "" ] && plex_claim_token="--env PLEX_CLAIM=$plex_claim_token"
 set -x
 docker run -d \
   --name "$containername" \
@@ -73,8 +75,9 @@ docker run -d \
   --env TZ="$tz" \
   --env PLEX_UID="$uid" \
   --env PLEX_GID="$gid" \
+  $hardware_transcoding_device \
+  $plex_claim_token \
   "$image"
-  # --env PLEX_CLAIM="<claimToken>" \
 set +x
 
 # https://unix.stackexchange.com/a/470629/338467
