@@ -165,7 +165,7 @@ When you start a new Plex server, it's a good idea to do initial setup by first 
 
 2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://127.0.0.1:port/web, where `port` is as configured above. Don’t use the machine’s actual IP address. This will give you the option at the app.plex.tv login screen to sign in (do this if `plexlogin` is `true`) or to skip logging in by clicking on “What’s this?” (do this if `plexlogin` is `false`).
 
-3) At the first Server Setup screen, if running in `bridged` or `http-only` mode, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Finishing up](https://github.com/wpwoodjr/plex-docker#remote-access-settings-page) below.
+3) At the first Server Setup screen, if running in `bridged` or `http-only` mode, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Remote Access settings page](https://github.com/wpwoodjr/plex-docker#remote-access-settings-page) below.
 
 4) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
 
