@@ -13,7 +13,6 @@ do
   dir="${!m}"
   [ -d "$dir" ] && media_vols+=(-v "$dir:/$m")
 done
-# [ -d "$media" ] || mkdir -pv "$media"
 [ "$media_vols" = "" ] && echo "No media directories, please edit conf file" && exit 1
 
 config=${config:-"$plex_db/config"}
