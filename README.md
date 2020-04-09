@@ -158,7 +158,7 @@ Slideshow speed set to 4000 milliseconds.
 ```
 Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
 
-### Initial setup tips
+### Initial startup tips
 When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above.  If you're having trouble accessing the server, try these steps:
 
 1) Before starting the server, delete all of its config files that may be left over from previous attempts to run it.
