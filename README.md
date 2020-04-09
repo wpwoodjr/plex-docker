@@ -166,7 +166,7 @@ When you start a new Plex server, it's a good idea to do initial setup by first 
 
 3) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
 
-4) If you did log in, you should see the new server listed under More on the left side.
+4) If you did log in, you should see the new server listed under **More** on the left side.
 
 ## Stopping the Plex container
 To stop Plex, run:
