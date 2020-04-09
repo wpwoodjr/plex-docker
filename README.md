@@ -158,15 +158,18 @@ Slideshow speed set to 4000 milliseconds.
 ```
 Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
 
+### Initial setup tips
 When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above.  If you're having trouble accessing the server, try these steps:
 
 1) Before starting the server, delete all of its config files that may be left over from previous attempts to run it.
 
-2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://127.0.0.1:port/web, where `port` is as configured above. Don’t use the machine’s actual IP address. This will give you the option at the app.plex.tv login screen to login or to skip logging in by clicking on “What’s this?”
+2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://127.0.0.1:port/web, where `port` is as configured above. Don’t use the machine’s actual IP address. This will give you the option at the app.plex.tv login screen to sign in (do this if `plexlogin` is `true`) or to skip logging in by clicking on “What’s this?” (do this if `plexlogin` is `false`).
 
-3) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
+3) At the first Server Setup screen, if running in `bridged` or `http-only` mode, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Finishing up](https://github.com/wpwoodjr/plex-docker#finishing-up) below.
 
-4) If you did log in, you should see the new server listed under **More** on the left side.
+4) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
+
+5) If you did log in, you should see the new server listed under **MORE** on the left side.
 
 ## Stopping the Plex container
 To stop Plex, run:
@@ -178,15 +181,19 @@ After you stop Plex, it will not restart again until you restart it with `./star
 ## Finishing up
 Once the server is up and running, go to its settings pages and finish configuring it. 
 
-### LAN Networks
-If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting on the `Network` settings page.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as configured in `conf`.
+### Remote Access settings page
+If the server is logged in and you are running in `bridged` or `http-only` mode, on this screen you will be able to manually enter the `port` (as configured in `conf`) for remote connections.  You will also need to configure your router to pass that port through.
 
-### Effect of `plexlogin` on network settings
+### Networks settings page
+#### LAN Networks
+If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as configured in `conf`.
+
+#### Effect of `plexlogin` on network settings
 The `plexlogin` setting, described above, directly affects the values of these `Network` settings:
-#### `Custom server access URLs`
+##### `Custom server access URLs`
 If `plexlogin` is `true`, and `mode` is `bridged` or `http-only`, this will be set to `http://ip:port/` where `ip` is the ip address of your host machine and `port` is as configured in `conf`.  Otherwise this will be set to blank.
 
-#### `List of IP addresses and networks that are allowed without auth`
+##### `List of IP addresses and networks that are allowed without auth`
 If `plexlogin` is `false`, this will be set to `ip/24,docker_network` where `ip` is the ip address of your host machine, and `docker_network` is as configured in `conf`.
 Otherwise this will be set to blank.
 
