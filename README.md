@@ -152,8 +152,8 @@ Processing triggers for libc-bin (2.23-0ubuntu11) ...
 Starting Plex Media Server.
 
 Plex Server started in container plex at http://10.0.1.15:34200/web
-If this is the first time running this Plex server, using an incognito browser on
-the Docker host machine do initial setup at http://localhost:34200/web
+If this is the first time running this Plex server, use an incognito browser on
+the Docker host machine to do initial setup at http://localhost:34200/web
 Slideshow speed set to 4000 milliseconds.
 ```
 Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
