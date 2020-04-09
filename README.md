@@ -158,13 +158,13 @@ Slideshow speed set to 4000 milliseconds.
 ```
 Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
 
-When you start a new container, it's a good idea to do initial setup by browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above.  If you're having trouble accessing the server, try these steps:
+When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above.  If you're having trouble accessing the server, try these steps:
 
 1) Before starting the server, delete all of its config files that may be left over from previous attempts to run it.
 
 2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://127.0.0.1:port/web, where `port` is as configured above. Don’t use the machine’s actual IP address. This will give you the option at the app.plex.tv login screen to login or to skip logging in by clicking on “What’s this?”
 
-3) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a `client-setup` link.
+3) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
 
 4) If you did log in, you should see the new server listed under More on the left side.
 
