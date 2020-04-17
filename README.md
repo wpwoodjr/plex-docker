@@ -1,5 +1,5 @@
 # plex-docker
-Easy to run Plex in Docker (host or bridge mode) with flexible configuration.  A nice benefit, it allows you to change the web slideshow speed, and to run multiple Plex servers on one host, with or without Plex login.  Uses official Plex Docker image.
+I was in the position early on with Plex that I wanted to try it out quickly and see if I liked it.  In the end I had to spend hours learning how to configure it.  Long story short, I rolled up everything I learned here so others could benefit (and because it was fun).  In contrast to other "Plex in Docker" projects, this one attempts to take a high-level view of what you are trying to accomplish and automatically configure Docker and Plex to achieve that.
 
 ![Plex](https://i1.wp.com/softsfile.info/wp-content/uploads/2019/10/plex-pms-icon.png?fit=256%2C256)
 
