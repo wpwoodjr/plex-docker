@@ -14,11 +14,11 @@ media1=""
 media2=""
 media3=""
 
-# if you already have a Plex media config database, enter the full path name here
-# otherwise leave this blank unless you want the Plex database in a particular location
-config=""
-# leave this blank unless you want transcoding temp files in a particular location
-transcode=""
+# if you already have a Plex media database, enter the full path name here
+# default is "database/config" under the current working directory
+config="$(pwd)/database/config"
+# default location for transcoded files
+transcode="$(pwd)/database/transcode"
 
 servername="Plex Server"
 containername="plex"

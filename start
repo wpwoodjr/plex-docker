@@ -4,7 +4,6 @@
 # run ./stop to stop Plex
 
 set -e
-plex_db="$(pwd)/database"
 source ./conf
 
 media_vols=()
@@ -15,9 +14,7 @@ do
 done
 [ "$media_vols" = "" ] && echo "No media directories, please edit conf file" && exit 1
 
-config=${config:-"$plex_db/config"}
 [ -d "$config" ] || mkdir -pv "$config"
-transcode=${transcode:-"$plex_db/transcode"}
 [ -d "$transcode" ] || mkdir -pv "$transcode"
 
 if [ "$hostip" = "" ]
@@ -38,7 +35,7 @@ if [ "$mode" = "host" ]
 then
   port=32400
   network_args=(--network "host")
-  [ $plexlogin != true ] && allowed_networks="$hostip/24"
+  [ "$plexlogin" != true ] && allowed_networks="$hostip/24"
 else
   network_args=(-p "$port:32400/tcp")
   if [ "$mode" = "bridged" ]
@@ -53,15 +50,15 @@ else
       -p 32413:32413/udp \
       -p 32414:32414/udp)
   fi
-  [ $plexlogin != true ] && allowed_networks="$hostip/24,$docker_network"
-  [ $plexlogin = true ] && advertise_ip="http://$hostip:$port/"
+  [ "$plexlogin" != true ] && allowed_networks="$hostip/24,$docker_network"
+  [ "$plexlogin" = true ] && advertise_ip="http://$hostip:$port/"
 fi
 network_args+=(--env ALLOWED_NETWORKS="$allowed_networks" --env ADVERTISE_IP="$advertise_ip")
 
 rm=""
 [ "$restart_policy" = "no" ] && rm="--rm"
 [ "$hardware_transcoding_device" != "" ] && hardware_transcoding_device="--device $hardware_transcoding_device"
-[ "$plex_claim_token" != "" ] && plex_claim_token="--env PLEX_CLAIM=$plex_claim_token"
+[ "$plexlogin" = true ] && [ "$plex_claim_token" != "" ] && plex_claim_token="--env PLEX_CLAIM=$plex_claim_token"
 set -x
 docker run -d \
   --name "$containername" \
@@ -91,8 +88,13 @@ wait() {
 
 wait 30 "Starting Plex Media Server." "docker logs -f $containername"
 echo -e "\n$servername started in container $containername at http://$hostip:$port/web"
-echo "If this is the first time running this Plex server, use an incognito browser on"
-echo "the Docker host machine to do initial setup at http://localhost:$port/web"
+echo "First time setup (see README.md for more info):"
+echo -e "  o Using an incognito browser on the Docker host machine,\n    do initial setup at http://localhost:$port/web"
+# Remote Access settings page
+[ "$plexlogin" = true ] && echo -e "  o On the Remote Access settings page,\n    you can Manually specify public port as $port (or another port of your choosing)"
+# Network settings page
+[ "$mode" != "host" ] && [ "$plexlogin" = true ] \
+  && echo -e "  o If you are a Plex Pass subscriber, on the Network settings page\n    set LAN Networks to $hostip/24,$docker_network"
 
 if [ "$slideshow_speed_ms" != "default" ]
 then
@@ -106,5 +108,5 @@ then
     "grep -q 'this.onSlideShowAdvance,$slideshow_speed_ms' \
     /usr/lib/plexmediaserver/Resources/Plug-ins*/WebClient.bundle/Contents/Resources/js/chunk*.js" \
   || { echo "Slideshow speed not set!"; exit 1; }
-  echo "Slideshow speed set to $slideshow_speed_ms milliseconds."
+  echo "Slideshow speed set to $slideshow_speed_ms milliseconds"
 fi
