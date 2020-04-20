@@ -14,7 +14,9 @@ do
 done
 [ "$media_vols" = "" ] && echo "No media directories, please edit conf file" && exit 1
 
+config=${config:-"$(pwd)/database/config"}
 [ -d "$config" ] || mkdir -pv "$config"
+transcode=${transcode:-"$(pwd)/database/transcode"}
 [ -d "$transcode" ] || mkdir -pv "$transcode"
 
 if [ "$hostip" = "" ]
