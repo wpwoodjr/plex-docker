@@ -87,7 +87,7 @@ wait() {
 }
 
 wait 30 "Starting Plex Media Server." "docker logs -f $containername"
-echo -e "\n$servername started in container $containername at http://$hostip:$port/web"
+echo -e "\n$servername started in container $containername ($mode mode) at http://$hostip:$port/web"
 echo "First time setup (see README.md for more info):"
 echo -e "  o Using an incognito browser on the Docker host machine,\n    do initial setup at http://localhost:$port/web"
 # Remote Access settings page

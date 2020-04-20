@@ -45,17 +45,10 @@ Then in Plex your music will still be in `/home/user/Music`, pictures in `/home/
 At this point you can proceed to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container) below, or you can tweak these settings in `conf`:
 
 ### `config`
-This is where Plex maintains its media database and configuration.
-
-If you already have a Plex media database, enter its full path name,
-otherwise leave `config` blank (unless you want the Plex database in a particular location).
-
-If you don't change the value of `config`, by default a new directory named `config` will be created in directory `database` under the current working directory.
+This is where Plex maintains its media database and configuration.  Default is `database/config` under the current working directory.  If you already have a Plex media database, or want to specify a different location, change `config` to the full path name.
 
 ### `transcode`
-This is where Plex keeps temporary files during transcoding.  You probably do not need to change this, however you can change the value of `transcode` to the full path name of a transcode temporary space.
-
-If you don't change the value of `transcode`, by default a new directory named `transcode` will be created in directory `database` under the current working directory.
+This is where Plex keeps temporary files during transcoding.  Default is `database/transcode` under the current working directory. If you want to specify a different location, change `transcode` to the full path name.
 
 ### `servername`
 The name of your Plex server as displayed in Plex.  Defaults to `Plex Server`.
@@ -151,10 +144,15 @@ Processing triggers for libc-bin (2.23-0ubuntu11) ...
 [services.d] done.
 Starting Plex Media Server.
 
-Plex Server started in container plex at http://10.0.1.15:34200/web
-If this is the first time running this Plex server, use an incognito browser on
-the Docker host machine to do initial setup at http://localhost:34200/web
-Slideshow speed set to 4000 milliseconds.
+Plex Server started in container plex (http-only mode) at http://10.0.1.15:34200/web
+First time setup (see README.md for more info):
+  o Using an incognito browser on the Docker host machine,
+    do initial setup at http://localhost:34200/web
+  o On the Remote Access settings page,
+    you can Manually specify public port as 34200 (or another port of your choosing)
+  o If you are a Plex Pass subscriber, on the Network settings page
+    set LAN Networks to 10.0.1.15/24,172.16.0.0/12
+Slideshow speed set to 4000 milliseconds
 ```
 Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
 
