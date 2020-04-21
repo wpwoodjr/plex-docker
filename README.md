@@ -8,7 +8,7 @@ I was in the position early on with Plex that I wanted to try it out quickly and
 Clone or download this repository, then `cd` to it and follow the instructions below.
 
 ### Docker
-If you don't have Docker, install it per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
+If you don't have Docker, [install it](https://docs.docker.com/engine/install/) per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
 
 To have Plex automatically restart when the system reboots, you need to enable Docker to [start on boot](https://docs.docker.com/engine/install/linux-postinstall/#configure-docker-to-start-on-boot).  In Ubuntu, do:
 ```
