@@ -10,7 +10,7 @@ sudo apt-get update
 sudo apt-get install docker.io
 ```
 
-Then [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
+Then [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker:
 ```
 sudo groupadd docker
 sudo usermod -aG docker $USER
@@ -24,7 +24,7 @@ sudo systemctl enable docker
 
 ## Get Plextini
 
-Clone or [download](https://github.com/wpwoodjr/plex-docker/archive/master.zip) [this repository](https://github.com/wpwoodjr/plex-docker), then `cd` to the directory its in.
+Clone or [download](https://github.com/wpwoodjr/plex-docker/archive/master.zip) from [this repository](https://github.com/wpwoodjr/plex-docker), then `cd` to the directory its in.
 
 ## Configure media folders
 You edit the `conf` file to customize your Plextini installation.
@@ -68,7 +68,7 @@ You can find the Chrome OS host ip as follows:
 To keep the IP address from changing, you can optionally configure your router to assign your Chrome OS device a persistent IP address.
 
 ## Forward the Plextini port
-The Plextini container runs in a VM under Chrome OS, and is not directly accessible on your network. If you want to reach Plex from other devices (that's the whole point, right?) set up a port forward from Chrome OS to Crostini.  First install the excellent [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn?hl=en-US) Chrome extension in Chrome.  Then click `Create Rule` and configure it to forward port 32400 on Chrome to port 32400 in Crostini:
+The Plextini container runs in a VM under Chrome OS, and is not directly accessible on your network. If you want to reach Plex from other devices (that's the whole point, right?) set up a port forward from Chrome OS to Crostini.  First install the excellent [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn?hl=en-US) Chrome extension in Chrome.  Then click `Create Rule` and configure it to forward port 32400 on Chrome OS (0.0.0.0) to port 32400 in Crostini (penguin.linux.test):
 
 ![Plextini port forwarding](https://github.com/wpwoodjr/plex-docker/blob/master/plextini-port-forward.png)
 
