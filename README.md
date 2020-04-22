@@ -5,7 +5,7 @@ I was in the position early on with Plex that I wanted to try it out quickly and
 
 ## Getting started
 
-Clone or download this repository, then `cd` to it and follow the instructions below.
+Clone or (download)[https://github.com/wpwoodjr/plex-docker/archive/master.zip] this repository, then `cd` to it and follow the instructions below.
 
 ### Docker
 If you don't have Docker, [install it](https://docs.docker.com/engine/install/) per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.
@@ -16,7 +16,7 @@ sudo systemctl enable docker
 ```
 
 ### Configuring media folders
-The `conf` file is where you customize your Plex server installation.
+You edit the `conf` file to customize your Plex server installation.
 First configure your media folders.  In `conf` you will see:
 ```
 media_folders=(media media1 media2 media3)
@@ -180,7 +180,7 @@ After you stop Plex, it will not restart again until you restart it with `./star
 Once the server is up and running, go to its settings pages and finish configuring it. 
 
 ### Remote Access settings page
-If the server is logged in, on this screen you will be able to manually enter the `port` (as configured in `conf`) for remote access (if not enabled already).  You may also need to configure your router to pass that port through.
+If the server is logged in, on this screen you will be able to manually enter the `port` (as configured in `conf`) for remote access.  You may also need to configure your router to pass that port through.
 
 ### Networks settings page
 #### LAN Networks
