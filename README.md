@@ -5,7 +5,7 @@ I was in the position early on with Plex that I wanted to try it out quickly and
 
 ## Getting started
 
-Clone or (download)[https://github.com/wpwoodjr/plex-docker/archive/master.zip] this repository, then `cd` to it and follow the instructions below.
+Clone or [download](https://github.com/wpwoodjr/plex-docker/archive/master.zip) this repository, then `cd` to it and follow the instructions below.
 
 ### Docker
 If you don't have Docker, [install it](https://docs.docker.com/engine/install/) per your OS instructions and [add yourself](https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user) to the `docker` group so that `sudo` is not required to use Docker.

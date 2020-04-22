@@ -24,7 +24,7 @@ sudo systemctl enable docker
 
 ## Get Plextini
 
-Clone or (download)[https://github.com/wpwoodjr/plex-docker/archive/master.zip] [this repository](https://github.com/wpwoodjr/plex-docker), then `cd` to the directory its in.
+Clone or [download](https://github.com/wpwoodjr/plex-docker/archive/master.zip) [this repository](https://github.com/wpwoodjr/plex-docker), then `cd` to the directory its in.
 
 ## Configure media folders
 You edit the `conf` file to customize your Plextini installation.
