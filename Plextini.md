@@ -60,20 +60,29 @@ hostip=<ip of your Chrome OS device>
 
 ## Crostini notes
 ### Port forwarding
-The Crostini container runs in a VM under Chrome OS, and is not directly accessible on your network. If you want to reach Plex from other devices (that's the whole point, right?) you must set up a port forward from Chrome OS to Crostini.  First install the great [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn?hl=en-US) Chrome extension in Chrome.  Then click `Create Rule` and configure it as follows:
+The Crostini container runs in a VM under Chrome OS, and is not directly accessible on your network. If you want to reach Plex from other devices (that's the whole point, right?) you must set up a port forward from Chrome OS to Crostini.  First install the great [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn?hl=en-US) Chrome extension in Chrome.  Then click `Create Rule` and configure it to forward traffic to Plex's port 32400 on your Chrome OS device to port 32400 in Crostini:
 
 ![Crostini port forwarding](https://github.com/wpwoodjr/plex-docker/blob/master/crostini-port-forward.png)
 
 You can also configure it to `Auto Start on Login` or `Run in Background`.
 
 ### Initial startup tips
-When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above (if your server is headless you can try [this](https://github.com/plexinc/pms-docker#running-on-a-headless-server-with-container-using-host-networking)). Follow these steps for best results:
+When you start up Plex for the first time, browse to `http://localhost:32400/web` in a local browser running in Crostini.  You can install Firefox for this purpose.  From Crostini, do:
+```
+sudo apt install firefox-esr
+```
+If you're running Ubuntu instead of the default Debian, you would do:
+```
+sudo apt install firefox
+```
+
+Follow these steps for best results:
 
 1) Before starting the server, delete all of its config files that may be left over from previous attempts to run it.
 
-2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://127.0.0.1:port/web, where `port` is as configured above. Don’t use the machine’s actual IP address. This will give you the option at the app.plex.tv login screen to sign in (do this if `plexlogin` is `true`) or to skip logging in by clicking on “What’s this?” (do this if `plexlogin` is `false`).
+2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://localhost:32400/web. This will give you the option at the app.plex.tv login screen to sign in (do this if `plexlogin` in the `conf` file is `true`) or to skip logging in by clicking on “What’s this?” (do this if `plexlogin` is `false`).
 
-3) At the first Server Setup screen, if running in `bridged` or `http-only` mode, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Remote Access settings page](https://github.com/wpwoodjr/plex-docker#remote-access-settings-page) below.
+3) At the first Server Setup screen, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Remote Access settings page](https://github.com/wpwoodjr/plex-docker#remote-access-settings-page).
 
 4) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
 
