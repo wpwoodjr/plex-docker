@@ -49,120 +49,22 @@ home="/home"
 ```
 Then in Plex your music will still be in `/home/user/Music`, pictures in `/home/user/Pictures`, and videos in `/home/user/Videos`.
 
-## Other settings (optional)
-At this point you can proceed to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container) below, or you can tweak these settings in `conf`:
-
-### `config`
-This is where Plex maintains its media database and configuration.  Default is `database/config` under the current working directory.  If you already have a Plex media database, or want to specify a different location, change `config` to the full path name.
-
-### `transcode`
-This is where Plex keeps temporary files during transcoding.  Default is `database/transcode` under the current working directory. If you want to specify a different location, change `transcode` to the full path name.
-
-### `servername`
-The name of your Plex server as displayed in Plex.  Defaults to `Plex Server`.
-
-### `containername`
-The name of the container that Plex runs in.  Defaults to `plex`.
-
-### `port`
-The port on which Plex will listen for incoming HTTP traffic.  Plex's normal port is `32400`, but if you are running two or more Plex servers, each will need a different HTTP port. `port` should be greater than `1024`.
-
-### `mode`
-The mode to run Docker in, `host`, `bridged`, or `http-only`.  `host` and `bridged` modes expose all the normal Plex network ports.  See [What network ports do I need to allow through my firewall?](https://support.plex.tv/articles/201543147-what-network-ports-do-i-need-to-allow-through-my-firewall/).  You can only run one Plex server in either `host` or `bridged` mode on a given host machine.
-
-`http-only` runs in bridged mode and only exposes the HTTP `port` defined above.  You can run one Plex server in either `host`, `bridged`, or `http-only` modes, and add additional Plex server(s) in `http-only` mode.  Ensure that each Plex server has a unique `port`, `servername`, and `containername`; and that `mode` is set appropriately.
-
-`mode` defaults to `host`.  In `host` mode the `port` is always `32400`.
-
-### `plexlogin`
-Indicates whether you plan to "claim" this server by logging it in.  Defaults to `true`.  Set `plexlogin` to `false` if you don't plan to access this server from https://app.plex.tv/.
-
-### `slideshow_speed_ms`
-The number of milliseconds a slide remains on-screen before switching to the next slide.  Since this relies on a change to the Javascript of the Plex Web Interface, it is only applicable when viewing the slideshow from your local Plex server (for example from http://10.0.1.15:34200/web, not from https://app.plex.tv).  See [Opening Plex Web App](https://support.plex.tv/articles/200288666-opening-plex-web-app/) for more info. Defaults to 5000 milliseconds (Plex's default).
-
-Since this feature relies on undocumented information, it could stop working any time there is a Plex upgrade.
-
-### `tz`
-Set this to your time zone so that Plex's time for running scheduled tasks reflects your time zone.  By default `tz` is set to `America/New_York`.
-
-See https://linuxize.com/post/how-to-set-or-change-timezone-in-linux/ and https://en.wikipedia.org/wiki/List_of_tz_database_time_zones for more info.
-
-### `uid` and `gid`
-By default Plex runs in the container under the user `plex` with your uid and gid.  If your uid or gid doesn't have read/write privileges to your media directories, set `uid` and/or `gid` to a value which does have read/write permissions in the media directories.
-
-### `hostip`
-The IP address of the host machine that Docker is running on.  Normally leave this blank unless the `start` script can't figure out the correct host IP address.
-
-### `docker_network`
-Docker's bridge network address range.  Normally you won't need to change this.
-
-### `image`
-This is the Docker image that is used to run Plex.  By default it is `plexinc/pms-docker:public`.  This image will update to the latest version of Plex Media Server every time the container is run.  If you want the beta version of Plex, change `public` to `beta`.  Note, beta versions are only available to Plex Pass subscribers.
-
-### `restart_policy`
-The restart policy for the Plex container.  Defaults to `always`.  If you don't want the container to restart on reboot, set it to `no`.
-
-### `hardware_transcoding_device`
-If your Docker host has access to a supported CPU with the Intel Quick Sync feature set and you are a current Plex Pass subscriber, you can enable hardware transcoding.  Set `hardware_transcoding_device` to the name of the kernel device, for example:
+## Other settings
+Make these changes in `conf` which are particular to Crostini:
 ```
-hardware_transcoding_device="/dev/dri:/dev/dri"
+servername="Plextini"
+containername="plextini"
+mode="http-only"
+hostip=<ip of your Chrome OS device>
 ```
-See [Intel Quick Sync Hardware Transcoding Support](https://github.com/plexinc/pms-docker/blob/master/README.md#intel-quick-sync-hardware-transcoding-support) for more info.
 
-### `plex_claim_token`
-The claim token for the Plex server to be automatically logged in to your Plex account. If the server is already logged in, this is ignored. You can obtain a claim token by visiting https://www.plex.tv/claim.
+## Crostini notes
+### Port forwarding
+The Crostini container runs in a VM under Chrome OS, and is not directly accessible on your network. If you want to reach Plex from other devices (that's the whole point, right?) you must set up a port forward from Chrome OS to Crostini.  First install the great [Connection Forwarder](https://chrome.google.com/webstore/detail/connection-forwarder/ahaijnonphgkgnkbklchdhclailflinn?hl=en-US) Chrome extension in Chrome.  Then click `Create Rule` and configure it as follows:
 
-## Starting the Plex container
-After configuring settings in `conf`, run:
-```
-./start
-```
-to start Plex.  You will see some log output similar to:
-```
-$ ./start
-36f7cbac3839852bcef92efdf834e8cb2f7a29e30f353812162cf37915abc986
-[s6-init] making user provided files available at /var/run/s6/etc...exited 0.
-[s6-init] ensuring user provided files have correct perms...exited 0.
-[fix-attrs.d] applying ownership & permissions fixes...
-[fix-attrs.d] done.
-[cont-init.d] executing container initialization scripts...
-[cont-init.d] 40-plex-first-run: executing... 
-Plex Media Server first run setup complete
-[cont-init.d] 40-plex-first-run: exited 0.
-[cont-init.d] 45-plex-hw-transcode-and-connected-tuner: executing... 
-[cont-init.d] 45-plex-hw-transcode-and-connected-tuner: exited 0.
-[cont-init.d] 50-plex-update: executing... 
-Attempting to upgrade to: 1.18.9.2578-513b381af
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-100   190    0   190    0     0    307      0 --:--:-- --:--:-- --:--:--   307
-100 86.2M  100 86.2M    0     0  14.3M      0  0:00:06  0:00:06 --:--:-- 16.7M
-Selecting previously unselected package plexmediaserver.
-(Reading database ... 7569 files and directories currently installed.)
-Preparing to unpack /tmp/plexmediaserver.deb ...
-PlexMediaServer install: Pre-installation Validation.  
-PlexMediaServer install: Docker detected. Preinstallation validation not required.  
-Unpacking plexmediaserver (1.18.9.2578-513b381af) ...
-Setting up plexmediaserver (1.18.9.2578-513b381af) ...
-PlexMediaServer install: Docker detected. Postinstallation tasks not required. Continuing.   
-Processing triggers for libc-bin (2.23-0ubuntu11) ...
-[cont-init.d] 50-plex-update: exited 0.
-[cont-init.d] done.
-[services.d] starting services
-[services.d] done.
-Starting Plex Media Server.
+![Crostini port forwarding](https://github.com/wpwoodjr/plex-docker/blob/master/crostini-port-forward.png)
 
-Plex Server started in container plex (http-only mode) at http://10.0.1.15:34200/web
-First time setup (see README.md for more info):
-  o Using an incognito browser on the Docker host machine,
-    do initial setup at http://localhost:34200/web
-  o On the Remote Access settings page,
-    you can Manually specify public port as 34200 (or another port of your choosing)
-  o If you are a Plex Pass subscriber, on the Network settings page
-    set LAN Networks to 10.0.1.15/24,172.16.0.0/12
-Slideshow speed set to 4000 milliseconds
-```
-Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
+You can also configure it to `Auto Start on Login` or `Run in Background`.
 
 ### Initial startup tips
 When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described near the end of the output above (if your server is headless you can try [this](https://github.com/plexinc/pms-docker#running-on-a-headless-server-with-container-using-host-networking)). Follow these steps for best results:
@@ -176,6 +78,10 @@ When you start a new Plex server, it's a good idea to do initial setup by first 
 4) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
 
 5) If you did log in, you should see the new server listed under **MORE** on the left side.
+
+
+## Next steps
+At this point you can proceed to [Other settings](https://github.com/wpwoodjr/plex-docker#other-settings-optional) to tweak other settings, or to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container) in the README.md.
 
 ## Stopping the Plex container
 To stop Plex, run:
