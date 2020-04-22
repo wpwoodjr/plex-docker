@@ -93,7 +93,7 @@ echo -e "\n$servername started in container $containername ($mode mode) at http:
 echo "First time setup (see README.md for more info):"
 echo -e "  o Using an incognito browser on the Docker host machine,\n    do initial setup at http://localhost:$port/web"
 # Remote Access settings page
-[ "$plexlogin" = true ] && echo -e "  o On the Remote Access settings page,\n    you can Manually specify public port as $port (or another port of your choosing)"
+[ "$plexlogin" = true ] && echo -e "  o On the Remote Access settings page,\n    specify public port as $port (or another port of your choosing)"
 # Network settings page
 [ "$mode" != "host" ] && [ "$plexlogin" = true ] \
   && echo -e "  o If you are a Plex Pass subscriber, on the Network settings page\n    set LAN Networks to $localip/24,$docker_network"
