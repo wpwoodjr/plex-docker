@@ -33,7 +33,9 @@ tz="America/New_York"
 uid="$(id -u)"
 gid="$(id -g)"
 
-hostip=""   # normally leave blank
+# normally leave blank.
+# if Plex is running in a VM, set hostip here and ensure that $port is forwarded from the host to the VM
+hostip=""
 docker_network="172.16.0.0/12"
 image="plexinc/pms-docker:public"
 restart_policy="always"

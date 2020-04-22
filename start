@@ -19,17 +19,17 @@ config=${config:-"$(pwd)/database/config"}
 transcode=${transcode:-"$(pwd)/database/transcode"}
 [ -d "$transcode" ] || mkdir -pv "$transcode"
 
-if [ "$hostip" = "" ]
+# if plex is running in a nat'd VM, then localip will be the VM's ip address and all traffic to Plex will appear to come from localip
+# in that scenario, set hostip in conf and ensure that $port is forwarded from the host to the VM
+localip=$(ip route get 8.8.8.8 || echo "0.0.0.0")
+if [ "$localip" = "0.0.0.0" ]
 then
-  hostip=$(ip route get 8.8.8.8 || echo "0.0.0.0")
-  if [ "$hostip" = "0.0.0.0" ]
-  then
-    echo -e "\nfailed to get host ip, exiting..."
-    exit 1
-  else
-    hostip=$(awk <<<$hostip '{gsub(".*src",""); print $1; exit}')
-  fi
+  [ "$hostip" = "" ] && echo -e "\nfailed to get host ip, please set hostip manually in conf" && exit 1
+  localip="$hostip"
+else
+  localip=$(awk <<<$localip '{gsub(".*src",""); print $1; exit}')
 fi
+hostip=${hostip:-"$localip"}
 
 allowed_networks=" "
 advertise_ip=" "
@@ -37,7 +37,7 @@ if [ "$mode" = "host" ]
 then
   port=32400
   network_args=(--network "host")
-  [ "$plexlogin" != true ] && allowed_networks="$hostip/24"
+  [ "$plexlogin" != true ] && allowed_networks="$localip/24"
 else
   network_args=(-p "$port:32400/tcp")
   if [ "$mode" = "bridged" ]
@@ -52,7 +52,7 @@ else
       -p 32413:32413/udp \
       -p 32414:32414/udp)
   fi
-  [ "$plexlogin" != true ] && allowed_networks="$hostip/24,$docker_network"
+  [ "$plexlogin" != true ] && allowed_networks="$localip/24,$docker_network"
   [ "$plexlogin" = true ] && advertise_ip="http://$hostip:$port/"
 fi
 network_args+=(--env ALLOWED_NETWORKS="$allowed_networks" --env ADVERTISE_IP="$advertise_ip")
@@ -96,7 +96,9 @@ echo -e "  o Using an incognito browser on the Docker host machine,\n    do init
 [ "$plexlogin" = true ] && echo -e "  o On the Remote Access settings page,\n    you can Manually specify public port as $port (or another port of your choosing)"
 # Network settings page
 [ "$mode" != "host" ] && [ "$plexlogin" = true ] \
-  && echo -e "  o If you are a Plex Pass subscriber, on the Network settings page\n    set LAN Networks to $hostip/24,$docker_network"
+  && echo -e "  o If you are a Plex Pass subscriber, on the Network settings page\n    set LAN Networks to $localip/24,$docker_network"
+# Plex running in VM
+[ "$hostip" != "$localip" ] && echo -e "  o Plex appears to be running in a VM\n    ensure that port $port is forwarded from the host to the VM"
 
 if [ "$slideshow_speed_ms" != "default" ]
 then
