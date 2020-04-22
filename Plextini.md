@@ -1,6 +1,8 @@
 # Plextini - plex in docker for Crostini
 Why do we run Plex Media Server in Crostini?  Because we can!
 
+Plex can be up and running in under half an hour on Crostini.
+
 ## Getting started
 
 Clone or download this repository, then `cd` to it and follow the instructions below, which have been customized for Crostini.
@@ -66,65 +68,18 @@ The Crostini container runs in a VM under Chrome OS, and is not directly accessi
 
 You can also configure it to `Auto Start on Login` or `Run in Background`.
 
-### Initial startup tips
-When you start up Plex for the first time, browse to `http://localhost:32400/web` in a local browser running in Crostini.  You can install Firefox for this purpose.  From Crostini, do:
+### Installing Firefox
+When you start up Plex for the first time, you need a browser running in Crostini to do initial configuration of Plex. You can install Firefox for this purpose.  From Crostini, do:
 ```
 sudo apt install firefox-esr
 ```
-If you're running Ubuntu instead of the default Debian, you would do:
+If you're running Ubuntu instead of the default Debian penguin, do:
 ```
 sudo apt install firefox
 ```
 
-Follow these steps for best results:
-
-1) Before starting the server, delete all of its config files that may be left over from previous attempts to run it.
-
-2) After starting the server, during initial setup, use an incognito browser that is on the same machine as the server. Clear cache in the browser for good luck, then go to http://localhost:32400/web. This will give you the option at the app.plex.tv login screen to sign in (do this if `plexlogin` in the `conf` file is `true`) or to skip logging in by clicking on “What’s this?” (do this if `plexlogin` is `false`).
-
-3) At the first Server Setup screen, uncheck `Allow me to access my media outside my home`.  You will have to configure this manually later, see [Remote Access settings page](https://github.com/wpwoodjr/plex-docker#remote-access-settings-page).
-
-4) If you did not log in at app.plex.tv during step 2, you ***must*** add a library during initial setup. If you don’t, the browser just sits there with a spinner at a link that ends with `client-setup`.
-
-5) If you did log in, you should see the new server listed under **MORE** on the left side.
-
+### Sleep mode
+To keep Chrome OS from going to sleep in the middle of `Terminator 2`, go to `Chrome OS Settings...Device...Power` and change `When idle` to `Turn off display` or `Keep display on`.
 
 ## Next steps
-At this point you can proceed to [Other settings](https://github.com/wpwoodjr/plex-docker#other-settings-optional) to tweak other settings, or to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container) in the README.md.
-
-## Stopping the Plex container
-To stop Plex, run:
-```
-./stop
-```
-After you stop Plex, it will not restart again until you restart it with `./start` as described above.
-
-## Finishing up
-Once the server is up and running, go to its settings pages and finish configuring it. 
-
-### Remote Access settings page
-If the server is logged in, on this screen you will be able to manually enter the `port` (as configured in `conf`) for remote access (if not enabled already).  You may also need to configure your router to pass that port through.
-
-### Networks settings page
-#### LAN Networks
-If `mode` is `bridged` or `http-only`, and you are a Plex Pass subscriber, pay particular attention to the `LAN Networks` setting.  Set it to `ip/24,docker_network`, where `ip` is the ip address of your host machine, and `docker_network` is as configured in `conf`.
-
-#### Effect of `plexlogin` on network settings
-The `plexlogin` setting, described above, directly affects the values of these `Network` settings:
-##### `Custom server access URLs`
-If `plexlogin` is `true`, and `mode` is `bridged` or `http-only`, this will be set to `http://ip:port/` where `ip` is the ip address of your host machine and `port` is as configured in `conf`.  Otherwise this will be set to blank.
-
-##### `List of IP addresses and networks that are allowed without auth`
-If `plexlogin` is `false`, this will be set to `ip/24,docker_network` where `ip` is the ip address of your host machine, and `docker_network` is as configured in `conf`.
-Otherwise this will be set to blank.
-
-## Plex updates
-If you get a server update notice, just `./stop` then `./start` the server to get the update.
-
-## Running more than one Plex server
-You can run zero or one Plex server(s) in `host` or `bridged` mode on a given host machine.  You can also run zero or more Plex server(s) in `http-only` mode. 
-
-To run a second Plex server, make a copy of these Github files in another directory and configure the `conf` file for the additional server.  Be sure to give the server a different `servername`, `containername`, and `port`.  Set `mode` as well.
-
-## More info
-For more information, or to help debug any issues, see the [Official Docker container for Plex Media Server](https://github.com/plexinc/pms-docker) documentation.
+At this point you can proceed to [Starting the Plex container](https://github.com/wpwoodjr/plex-docker#starting-the-plex-container), or to [Other settings (optional)](https://github.com/wpwoodjr/plex-docker#other-settings-optional) to tweak other configuration settings.
