@@ -57,15 +57,13 @@ else
 fi
 network_args+=(--env ALLOWED_NETWORKS="$allowed_networks" --env ADVERTISE_IP="$advertise_ip")
 
-rm=""
-[ "$restart_policy" = "no" ] && rm="--rm"
 [ "$hardware_transcoding_device" != "" ] && hardware_transcoding_device="--device $hardware_transcoding_device"
 [ "$plexlogin" = true ] && [ "$plex_claim_token" != "" ] && plex_claim_token="--env PLEX_CLAIM=$plex_claim_token"
 set -x
 docker run -d \
   --name "$containername" \
   --hostname "$servername" \
-  --restart "$restart_policy" $rm \
+  --restart "$restart_policy" \
   "${media_vols[@]}" \
   -v "$config:/config" \
   -v "$transcode:/transcode" \

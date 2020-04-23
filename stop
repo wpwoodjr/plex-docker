@@ -7,5 +7,5 @@ source ./conf
 
 echo "removing $containername container"
 docker container stop $containername >/dev/null
-[ "$restart_policy" != "no" ] && docker container rm $containername >/dev/null
+docker container rm $containername >/dev/null
 echo "run ./start to restart $servername"
