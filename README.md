@@ -161,7 +161,7 @@ First time setup (see README.md for more info):
     set LAN Networks to 10.0.1.15/24,172.16.0.0/12
 Slideshow speed set to 4000 milliseconds
 ```
-Plex should be up and running!  To go to its browser interface, note the line starting with "Plex server started" in the log output, and browse to the web address. For example, browse to `http://10.0.1.15:32400/web`
+Plex should be up and running!
 
 ### Initial startup tips
 When you start a new Plex server, it's a good idea to do initial setup by first browsing to `localhost` on the Docker host machine in an incognito browser, as described in the `First time setup` instructions in the output above.  If your server is headless you can try [this](https://github.com/plexinc/pms-docker#running-on-a-headless-server-with-container-using-host-networking). Follow these steps for best results:
