@@ -82,7 +82,7 @@ wait() {
   while IFS= read -r LOGLINE || [[ -n "$LOGLINE" ]]; do
     printf '%s\n' "$LOGLINE"
     [[ "${LOGLINE}" == "$2" ]] && return 0
-  done < <(timeout "$1" $3)
+  done < <(timeout "$1" $3 2>/dev/null)
   return 0
 }
 
